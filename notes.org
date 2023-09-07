@@ -1,0 +1,11 @@
+#+title: Notes
+
+LatticeGPU_dev.jl is an updated form of the version used for the continuum
+extrapolation with the masses for the single Higgs model.
+- Shared memory removed
+- Included mixed interpolator for W-boson
+- Fixed scalar smearing
+- Manifest and Project are updated for Julia 1.7 -- just change for older files
+  to use with 1.6
+- Added Mixed interpolators (changed how some interpolators are computed)
+- Complete set of couplings (10) -- eta4 and eta5 included

@@ -1,0 +1,13 @@
+name = "LatticeGPU"
+uuid = "958c3683-801a-4582-9cfa-2d6e2ae1763b"
+authors = ["Alberto Ramos <alberto.ramos@ific.uv.es>"]
+version = "0.1.0"
+
+[deps]
+ADerrors = "5e92007d-7bf1-471c-8ceb-4591b8b567a9"
+BDIO = "375f315e-f2c4-11e9-2ef9-134f02f79e27"
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+StructArrays = "09ab397b-f2b6-538f-b94a-2f83cf4a842a"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+TimerOutputs = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
