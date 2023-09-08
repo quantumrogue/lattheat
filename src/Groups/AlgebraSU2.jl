@@ -42,6 +42,19 @@ Base.:/(a::SU2alg,b::SU2) = alg2mat(a)/b
 Base.:\(a::SU2,b::SU2alg) = a\alg2mat(b)
 
 
+## ================= ADDED BY PIETRO ======================
+#Multiplication by i*(Pauli Matrix)
+algipau(a::SU2alg{T}, ::Type{Pauli{1}}) where T <: AbstractFloat = SU2{T}(complex(-a.v[1], a.v[2]),complex(zero(T),-a.v[3]))
+algipau(a::SU2alg{T}, ::Type{Pauli{2}}) where T <: AbstractFloat = SU2{T}(complex(-a.v[2],-a.v[1]),complex(zero(T), a.v[3]))
+algipau(a::SU2alg{T}, ::Type{Pauli{3}}) where T <: AbstractFloat = SU2{T}(complex(zero(T),-a.v[3]),complex(a.v[1], -a.v[2]))
+
+algipau(::Type{Pauli{1}},a::SU2alg{T}) where T <: AbstractFloat = SU2{T}(complex(-a.v[1],-a.v[2]),complex(a.v[3],zero(T)))
+algipau(::Type{Pauli{2}},a::SU2alg{T}) where T <: AbstractFloat = SU2{T}(complex(-a.v[2],a.v[1]), complex(zero(T),-a.v[3]))
+algipau(::Type{Pauli{3}},a::SU2alg{T}) where T <: AbstractFloat = SU2{T}(complex(zero(T),-a.v[3]),complex(-a.v[1],a.v[2]))
+## =========================================================
+
+
+
 """
     function Base.exp(a::T, t::Number=1) where {T <: Algebra}
 
