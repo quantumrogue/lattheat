@@ -56,4 +56,9 @@ export HMC_Scalar!, randomize!
 export scalar_obs, scalar_corr, mixed_corr, smearing
 
 
+include("ZQCD/ZQCD.jl")
+
+using .ZQCD
+export ZQCDParm, ZQCDWorkspace
+
 end # module

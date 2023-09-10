@@ -1,4 +1,4 @@
-###
+        ###
 ### "THE BEER-WARE LICENSE":
 ### Alberto Ramos wrote this file. As long as you retain this 
 ### notice you can do whatever you want with this stuff. If we meet some 
@@ -6,15 +6,15 @@
 ### return. <alberto.ramos@cern.ch>
 ###
 ### author  pietro.butti.fl@gmail.com
-### file:    AdjScalarForce.jl
+### file:    ZQCDForce.jl
 ### created: Wed Oct  6 15:39:07 2021
 ###                               
 
-function force_adj_scalar(ymws::YMworkspace, sws::AdjScalarWorkspace, U, Sigma, Pi, sp::AdjScalarParm, gp::GaugeParm, lp::SpaceParm)
+function force_zqcd(ymws::YMworkspace, sws::AdjScalarWorkspace, U, Sigma, Pi, sp::AdjScalarParm, gp::GaugeParm, lp::SpaceParm)
 
     # @timeit "Scalar force" begin
     #     CUDA.@sync begin
-    #         CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_force_scalar!(ymws.frc1,sws.frc1,U,Phi,sp,gp,lp)
+    #         CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_force_zqcd!(ymws.frc1,sws.frc1,U,Phi,sp,gp,lp)
     #     end
     # end
 
@@ -22,7 +22,7 @@ function force_adj_scalar(ymws::YMworkspace, sws::AdjScalarWorkspace, U, Sigma, 
 end
 
 
-function krnl_force_adj_scalar!(fgauge,fZ, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, sp::AdjScalarParm{T}, gp::GaugeParm, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,T,N,M,B,D}
+function krnl_force_zqcd!(fgauge,fZ, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, sp::AdjScalarParm{T}, gp::GaugeParm, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,T,N,M,B,D}
 
     # Square mapping to CUDA block
     b = Int64(CUDA.threadIdx().x)
