@@ -1,12 +1,12 @@
 1) WRITE THE CODE
-  |done! <---`ZQCD.jl`
+`ZQCD.jl`
   |done! <---  - Define `ZQCDParm{T}`
   |done! <---  - Define a constructor that initialize `ZQCDParm{T}` with coefficients from the paper
   |done! <---  - Define `ZQCDWorkspace{T}` 
   - Test consistency
 
 `ZQCDAction.jl`
-  - Write `zqcd_action` and `krnl_act!`
+  |done! <---  - Write `zqcd_action` and `krnl_act!`
   - Test consistency
 
 `ZQCDFields.jl`
@@ -41,7 +41,6 @@ From `YMact.jl`:
   `S += tr(U[b,id1,r]*gt1 / (U[b,id2,r]*U[bu2,id1,ru2]))`
 - why matrix multiplication is not inline? 
 - matrix allocated every time? Isn't this wrong???
-
 
 Why not using shared memory in blocks?
  `cache = @cuDynamicSharedMem(Int64, threadsPerBlock)`

@@ -56,19 +56,25 @@ module ZQCD
     end
     export ZQCDParm
 
-    struct ZQCDWorkspace{T}
+    struct ZQCDworkspace{T}
         frc
         mom
         Sigma
         Pi
-        ZQCDWorkspace(::Type{T}, lp::SpaceParm) where {T<:AbstractFloat} = new{T}(
+        ZQCDworkspace(::Type{T}, lp::SpaceParm) where {T<:AbstractFloat} = new{T}(
             nscalar_field(T,4,lp),     # F_Π : 3 scalar fields
             nscalar_field(T,4,lp),     # mom_α : 4 scalar field
             scalar_field(T,lp),        # Σ : a real field
             scalar_field(SU2alg{T},lp) # Π : (3 scalar field ∼) SU2 algebra matrix (Π = i Πₐ⋅σₐ)
         )
     end
-    export ZQCDWorkspace
+    export ZQCDworkspace
+
+
+
+    include("ZQCDAction.jl")
+        export zqcd_action, krnl_zqcd_act!
+
 
 
 end

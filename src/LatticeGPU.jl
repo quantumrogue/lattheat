@@ -59,6 +59,8 @@ export scalar_obs, scalar_corr, mixed_corr, smearing
 include("ZQCD/ZQCD.jl")
 
 using .ZQCD
-export ZQCDParm, ZQCDWorkspace
+export ZQCDParm, ZQCDworkspace
+export zqcd_action, krnl_zqcd_act!
+
 
 end # module
