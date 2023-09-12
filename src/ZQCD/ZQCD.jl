@@ -23,7 +23,6 @@ module ZQCD
     import Base.show
 
     struct ZQCDParm{T}
-        beta::T
         b1::T
         b2::T
         c1::T
@@ -43,12 +42,11 @@ module ZQCD
         _b1 =  -r2/(2. * g2)^2 - 2.38193365/4. /π * (2. *_c1 + _c3 ) * β + 1. / 16. / π^2 * ((48. *_c1^2 + 12. *_c3^2 - 12. *_c3 )*(log(1.5*β) + 0.08849) - 6.9537*_c3)
         _b2 =  -r2/(2. * g2)^2 + 0.441841/g2 - 0.7939779/4. / π * (10. * _c2 + _c3 + 2) * β +  1. / 16. / π^2 * ((80. *_c2^2 + 4. *_c3^2 - 40. *_c3 )*(log(1.5*β) + 0.08849) - 23.17895*_c2 - 8.66687)
 
-        return ZQCDParm{T}(β,_b1,_b2,_c1,_c2,_c3)
+        return ZQCDParm{T}(_b1,_b2,_c1,_c2,_c3)
     end
 
     function Base.show(io::IO, sp::ZQCDParm{T}) where T
         println(io, " ZQCD initialized with: ")
-        println(io, "β = $(sp.beta)")
         println(io, "b₁ = $(sp.b1)")
         println(io, "b₂ = $(sp.b2)")
         println(io, "c₁ = $(sp.c1)")

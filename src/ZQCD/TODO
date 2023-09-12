@@ -30,3 +30,18 @@
 
 2) REPRODUCE PAPER RESULTS
 
+
+
+
+================== QUESTIONS =================
+How does memory allocation works in kernel???
+
+From `YMact.jl`:
+  `gt1 = U[bu1,id2,ru1]`
+  `S += tr(U[b,id1,r]*gt1 / (U[b,id2,r]*U[bu2,id1,ru2]))`
+- why matrix multiplication is not inline? 
+- matrix allocated every time? Isn't this wrong???
+
+
+Why not using shared memory in blocks?
+ `cache = @cuDynamicSharedMem(Int64, threadsPerBlock)`

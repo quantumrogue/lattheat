@@ -10,10 +10,10 @@
 ### created: Fri  8 Sep 2023 12:22:24 CEST
 ###                               
 
-function zqcd_action(U, Sigma, Pi, lp::SpaceParm, sp::ZQCDParm, ymws::YMworkspace{T}) where {T <: AbstractFloat}
+function zqcd_action(U, Sigma, Pi, lp::SpaceParm, sp::ZQCDParm, gp::GaugeParm, ymws::YMworkspace{T}) where T<:AbstractFloat
     @timeit "Adjoint scalar action" begin
         CUDA.@sync begin
-            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_zqcd_act!(ymws.rm, U, Phi, sp, lp)
+            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_zqcd_act!(ymws.rm, gp.beta, U, Sigma, Pi, sp, lp)
         end
     end
         
@@ -22,7 +22,7 @@ function zqcd_action(U, Sigma, Pi, lp::SpaceParm, sp::ZQCDParm, ymws::YMworkspac
 end
 
 
-function krnl_zqcd_act!(act, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, sp::ZQCDParm{T}, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,N,M,B,D}
+function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, sp::ZQCDParm{T}, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,N,M,B,D}
 
     # Square mapping to CUDA block
     b = Int64(CUDA.threadIdx().x)
@@ -31,15 +31,49 @@ function krnl_zqcd_act!(act, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi:
     S = zero(eltype(act))
 
     # Calculate kinetic action for Σ
-    S = - 8. / sp.beta * Sigma[b,r]
-    for dir in 1:N
-        b_up, r_up = up((b, r), id, lp)
-        S *= Sigma[b_up,r_up]
-    end
-    S += 8. / sp.beta * 3. * Sigma[b,r]*Sigma[b,r]
+        sigma2 = Sigma[b,r]*Sigma[b,r]
+        S -= - 2. * Sigma[b,r]
+        for dir in 1:N
+            b_up, r_up = up((b, r), dir, lp)
+            S *= Sigma[b_up,r_up]
+        end
+        S += 3. * sigma2
 
-    I = point_coord((b,r), lp)
+    # Calculate kinetic action for Π
+        pi2 = norm2(Pi[b,r])
+        S += 3. * 2. * pi2
+        for dir in 1:N
+            b_up, r_up = up((b, r), dir, lp)
+            S -= tr( Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r])  ## what about inline allocation?
+        end
+
+    # Calculate potential
+        S += sp.b1 * sigma2 + 
+            sp.b2 * pi2 + 
+            sp.c1 * sigma2 * sigma2 + 
+            sp.c2 * pi2 * pi2 +
+            sp.c3 * pi2 * sigma2
+    S *= 4. / beta
+
+    # Calculate gauge action
+        I = point_coord((b,r), lp)
+        it = I[N]
+
+        for id1 in N:-1:1
+            bu1, ru1 = up((b, r), id1, lp)
+            ipl = ipl + 1
+
+            for id2 = 1:id1-1
+                bu2, ru2 = up((b, r), id2, lp)
+                ipl = ipl + 1
+
+                gt1 = U[bu1,id2,ru1]
+                S -= beta * tr(U[b,id1,r]*gt1 / (U[b,id2,r]*U[bu2,id1,ru2])) / 2.
+            end
+        end
+
     act[I] = S
+
     return nothing
 end
 
