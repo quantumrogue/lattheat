@@ -54,6 +54,10 @@ fill!(U, one(GRP{PREC}))
 # @time Σcpu = Array(Σ)
 # @time Πcpu = Array(Π)
 
+
 println("Try to compute the action")
 @time S = zqcd_action(U,Σ,Π,lp,zp,gp,ymws)
+println(S)
+@time S = zqcd_action(U,Σ,Π,lp,zp,gp,ymws)
+println(S)
 

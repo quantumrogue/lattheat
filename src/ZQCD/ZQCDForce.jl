@@ -10,19 +10,19 @@
 ### created: Wed Oct  6 15:39:07 2021
 ###                               
 
-function force_zqcd(ymws::YMworkspace, sws::AdjScalarWorkspace, U, Sigma, Pi, sp::AdjScalarParm, gp::GaugeParm, lp::SpaceParm)
+function force_zqcd(ymws::YMworkspace, zws::ZQCDWorkspace, U, Sigma, Pi, zp::ZQCDParm, gp::GaugeParm, lp::SpaceParm)
 
-    # @timeit "Scalar force" begin
-    #     CUDA.@sync begin
-    #         CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_force_zqcd!(ymws.frc1,sws.frc1,U,Phi,sp,gp,lp)
-    #     end
-    # end
+    @timeit "ZQCD force" begin
+        CUDA.@sync begin
+            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_force_zqcd!(ymws.frc1,zws.frc,U,Sigma,Pi,zp,gp,lp)
+        end
+    end
 
     return nothing
 end
 
 
-function krnl_force_zqcd!(fgauge,fZ, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, sp::AdjScalarParm{T}, gp::GaugeParm, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,T,N,M,B,D}
+function krnl_force_zqcd!(fgauge,fZ, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, zp::ZQCDParm{T}, gp::GaugeParm, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,T,N,M,B,D}
 
     # Square mapping to CUDA block
     b = Int64(CUDA.threadIdx().x)
@@ -32,8 +32,8 @@ function krnl_force_zqcd!(fgauge,fZ, U::AbstractArray{TG}, Sigma::AbstractArray{
     Pi3 = 8. * (Pi[b,r].t1^3 + Pi[b,r].t2^3 + Pi[b,r].t3^3)
 
     # Compute force for Σ -------------------------------------------------------
-        fZ[b,1,r] = (6. + sp.b1 + sp.c3 * Pi2*Pi2)*Sigma[b,r] + 
-            2. * sp.c1 * Sigma[b,r]*Sigma[b,r]*Sigma[b,r]
+        fZ[b,1,r] = (6. + 2. *zp.b1 + 2. *zp.c3 * Pi2)*Sigma[b,r] + 
+            4. * zp.c1 * Sigma[b,r]*Sigma[b,r]*Sigma[b,r]
 
         for dir in 1:N
             # Fetch the coordinates of point after and before in direction dir
@@ -41,27 +41,46 @@ function krnl_force_zqcd!(fgauge,fZ, U::AbstractArray{TG}, Sigma::AbstractArray{
 
             fZ[b,1,r] -= Sigma[up_b,up_r] - Sigma[dw_b,dw_r]
         end
-        fZ[b,1,r] *= 8. /gp.beta
+        fZ[b,1,r] *= 4. /gp.beta
 
     # Compute force for Π ---------------------------------------------------------
     for aa in 1:3
         # Fetch the field component
         Pia = 2. * (aa==1 ? Pi[b,r].t1 : (aa==2 ? Pi[b,r].t2 : Pi[b,r].t3)) #(maybe better with symbolic notation?)
         
-        fZ[b,aa,r] = 2. * sp.b2 * Pia + 
-            2. * sp.c3 * Sigma[b,r] * Pi2 +
-            4. * sp.c2 * Pi3
+        # fZ[b,aa,r] = 2. * zp.b2 * Pia + 
+        #     2. * zp.c3 * Sigma[b,r] * Pi2 +
+        #     4. * zp.c2 * Pi3
 
+        # for bb in 1:3
+        #     if bb!=aa
+        #         Pib = 2. * (bb==1 ? Pi[b,r].t1 : (bb==2 ? Pi[b,r].t2 : Pi[b,r].t3))
+        #         fZ[b,aa,r] += Pia*Pib*Pib
+        #     end
+        # end
+
+        # algipau(Pauli{aa},Pi[b,r]) + algipau(Pi[b,r],Pauli{aa})
+        
+        # fZ[b,aa,r] *= 4. / gp.beta
+
+
+
+        # Potential parameters
+        FF = 0 ## da cambiare di brutto
         for bb in 1:3
             if bb!=aa
                 Pib = 2. * (bb==1 ? Pi[b,r].t1 : (bb==2 ? Pi[b,r].t2 : Pi[b,r].t3))
-                fZ[b,aa,r] += Pia*Pib*Pib
+                FF += Pib^2
             end
         end
+        FF *= Pia 
+        FF += Pia^2
+        FF *= 4. * zp.c2 *
+        FF += 4. / gp.beta * ( 2. * (zp.b2 + zp.c3*Sigma[b,r]) * Pia )
 
-        algipau(Pauli{aa},Pi[b,r]) + algipau(Pi[b,r],Pauli{aa})
-        
-        fZ[b,aa,r] *= 4. / gp.beta
+        #...
+
+        return nothing
     end
 
 

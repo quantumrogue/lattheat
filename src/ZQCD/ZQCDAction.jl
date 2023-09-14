@@ -31,47 +31,46 @@ function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS
     S = zero(eltype(act))
 
     # Calculate kinetic action for Σ
-        sigma2 = Sigma[b,r]*Sigma[b,r]
-        S -= - 2. * Sigma[b,r]
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
-            S *= Sigma[b_up,r_up]
+            S -= Sigma[b_up,r_up]
         end
-        S += 3. * sigma2
+        S *= Sigma[b,r]
+        sigma2 = Sigma[b,r]*Sigma[b,r]
+        S += sigma2
 
     # Calculate kinetic action for Π
         pi2 = norm2(Pi[b,r])
         S += 3. * 2. * pi2
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
-            S -= tr( Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r])  ## what about inline allocation?
+
+            # Analytical expression for a SU(2) matrix like tr(AXBX')
+            S -= 2. * pi2 * (
+                real( U[b,dir,r].t1 * Pi[b_up,r_up].t1 ) - real(U[b,dir,r].t2 * conj(Pi[b_up,r_up].t2))
+            )
         end
 
-    # # Calculate potential
-    #     S += sp.b1 * sigma2 + 
-    #         sp.b2 * pi2 + 
-    #         sp.c1 * sigma2 * sigma2 + 
-    #         sp.c2 * pi2 * pi2 +
-    #         sp.c3 * pi2 * sigma2
-    # S *= 4. / beta
+    # Calculate potential
+        S += sp.b1 * sigma2 + 
+            sp.b2 * pi2 + 
+            sp.c1 * sigma2 * sigma2 + 
+            sp.c2 * pi2 * pi2 +
+            sp.c3 * pi2 * sigma2
+
+    S *= 4. / beta
 
     # Calculate gauge action
-        I = point_coord((b,r), lp)
-        # it = I[N]
+        for I in N:-1:1
+            b_u1, r_u1 = up((b, r), I, lp)
+            for J in 1:I-1
+                    b_u2, r_u2 = up((b,r), J, lp)
+                    S -= beta/2. * tr( U[b,I,r] * U[b_u1,J,r_u1] / U[b_u2,I,r_u2] / U[b,J,r]) 
+            end
+        end
 
-        # for id1 in N:-1:1
-        #     bu1, ru1 = up((b, r), id1, lp)
-        #     ipl = ipl + 1
-
-        #     for id2 = 1:id1-1
-        #         bu2, ru2 = up((b, r), id2, lp)
-        #         ipl = ipl + 1
-
-        #         gt1 = U[bu1,id2,ru1]
-        #         S -= beta * tr(U[b,id1,r]*gt1 / (U[b,id2,r]*U[bu2,id1,ru2])) / 2.
-        #     end
-        # end
-
+        
+    I = point_coord((b,r), lp)
     act[I] = S
 
     return nothing
