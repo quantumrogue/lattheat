@@ -41,14 +41,10 @@ function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS
 
     # Calculate kinetic action for Π
         pi2 = norm2(Pi[b,r])
-        S += 3. * 2. * pi2
+        S += 2. * 3. * (- pi2/2.)
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
-
-            # Analytical expression for a SU(2) matrix like tr(AXBX')
-            S -= 2. * pi2 * (
-                real( U[b,dir,r].t1 * Pi[b_up,r_up].t1 ) - real(U[b,dir,r].t2 * conj(Pi[b_up,r_up].t2))
-            )
+            S -= 2. * tr(Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r])
         end
 
     # Calculate potential

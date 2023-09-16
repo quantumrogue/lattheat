@@ -34,7 +34,7 @@
 
 
 ================== QUESTIONS =================
-How does memory allocation works in kernel???
+1. How does memory allocation works in kernel???
 
 From `YMact.jl`:
   `gt1 = U[bu1,id2,ru1]`
@@ -44,3 +44,8 @@ From `YMact.jl`:
 
 Why not using shared memory in blocks?
  `cache = @cuDynamicSharedMem(Int64, threadsPerBlock)`
+
+
+2. Why does multiplication for pauli matrices does not have the 2????
+
+3. Why YM fields have 2 forces? Why YM forces just have dir as index and not aa also?

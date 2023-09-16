@@ -62,10 +62,10 @@ module ZQCD
         Sigma
         Pi
         ZQCDworkspace(::Type{T}, lp::SpaceParm) where {T<:AbstractFloat} = new{T}(
-            nscalar_field(T,4,lp),     # F_Π : 3 scalar fields
+            nscalar_field(T,4,lp),     # F_Z : 4 scalar fields
             nscalar_field(T,4,lp),     # mom_α : 4 scalar field
             scalar_field(T,lp),        # Σ : a real field
-            scalar_field(SU2alg{T},lp) # Π : (3 scalar field ∼) SU2 algebra matrix (Π = i Πₐ⋅σₐ)
+            scalar_field(SU2alg{T},lp) # Π : (3 scalar field ∼) SU2 algebra matrix (Π = i Πₐ/2⋅σₐ)
         )
     end
     export ZQCDworkspace
