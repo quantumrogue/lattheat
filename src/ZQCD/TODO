@@ -48,4 +48,10 @@ Why not using shared memory in blocks?
 
 2. Why does multiplication for pauli matrices does not have the 2????
 
-3. Why YM fields have 2 forces? Why YM forces just have dir as index and not aa also?
+3. Why YM fields have 2 forces? Why YM forces just have dir as index and not aa also? Why projalg substitue the trace???
+   
+   Formula (28), (29) of hmc_2hdm-1.pdf
+   compare to row 70 of ScalarForce.jl
+
+   Formula (35)
+   compare to row 72
