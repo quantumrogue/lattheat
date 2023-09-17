@@ -52,7 +52,7 @@ function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm
                 YM.force_gauge(ymws, U, gp.c0, gp, lp)
                 # zqcd_force(...)                
 
-                if (i < int.ns) && (k==1)
+                if (trajID < int.ns) && (k==1)
                     mom  .= mom  .+ (2. * int.r[k]*int.eps) .* ymws.frc1
                     Smom .= Smom .+ (2. * int.r[1]*int.eps) .* zws.frcSigma
                     Pmom .= Pmom .+ (2. * int.r[1]*int.eps) .* zws.frcPi
