@@ -50,7 +50,7 @@ function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm
                 k += off
 
                 YM.force_gauge(ymws, U, gp.c0, gp, lp)
-                # zqcd_force(...)                
+                zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
                 if (trajID < int.ns) && (k==1)
                     mom  .= mom  .+ (2. * int.r[k]*int.eps) .* ymws.frc1
