@@ -23,7 +23,6 @@ end
 
 
 function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::AbstractArray{TZ}, Pi::AbstractArray{TZ}, zp::ZQCDParm{T}, gp::GaugeParm, lp::SpaceParm{N,M,B,D}) where {TG,TZ,T,N,M,B,D}
-
     # Square mapping to CUDA block
     b = Int64(CUDA.threadIdx().x)
     r = Int64(CUDA.blockIdx().x)

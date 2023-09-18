@@ -28,7 +28,7 @@ function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm
     @timeit "ZQCD MD evolution" begin
         # Evaluate initial forces with (U⁽⁰⁾,Z⁽⁰⁾)
         YM.force_gauge(ymws, U, gp.c0, gp, lp)
-        # zqcd_force(...)
+        zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
         # Evaluate initial momenta (p⁽⁰⁾,π⁽⁰⁾)
         mom  .= mom  .+ (int.r[1]*int.eps) .* ymws.frc1
