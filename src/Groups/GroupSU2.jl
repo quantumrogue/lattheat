@@ -24,13 +24,6 @@ tr(g::SU2{T})            where T <: AbstractFloat = complex(2.0*real(g.t1), 0.0)
 dev_one(g::SU2{T})       where T <: AbstractFloat = sqrt(( abs2(g.t1 - one(T)) + abs2(g.t2))/2)
 
 
-# =============== PIETRO ================
-#Tr(g*i*PauliMatrix)
-tr_ipau(g::SU2{T}, ::Type{Pauli{1}}) where T <: AbstractFloat = complex(-2. * imag(g.t2), 0.0)
-tr_ipau(g::SU2{T}, ::Type{Pauli{2}}) where T <: AbstractFloat = complex(-2. * real(g.t2), 0.0)
-tr_ipau(g::SU2{T}, ::Type{Pauli{3}}) where T <: AbstractFloat = complex(-2. * imag(g.t1), 0.0)
-# +++++++++++++++++++++++++++++++++++++++
-
 
 """
     function unitarize(a::T) where {T <: Group}
