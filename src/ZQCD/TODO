@@ -13,17 +13,16 @@
   - Write `randomize` and `krnl_assign_SU2` (maybe simply reusable from ScalarFields.jl?)
 
 `ZQCDForce.jl`
-  - Write `force_zqcd` and `krnl_force_zqcd!`
+  |done! <---  - Write `force_zqcd` and `krnl_force_zqcd!`
   - Test consistency
 
 `ZQCDHMC.jl`
-  - Write `hamiltonian`
+  |done! <---  - Write `hamiltonian`
   - write `HMC!`
-  - write `MD!`
+  |done! <---  - write `MD!`
   - test HMC and diagnostics
 
 `ZQCDObs.jl`
-
 
 
 1) TEST/PLAY WITH THE CODE AND ESTIMATE GPU MEMORY TIME/USAGE
