@@ -44,7 +44,7 @@ function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS
         S += 2. * 3. * (- pi2/2.)
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
-            S -= 2. * tr(Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r])
+            S -= 2. * tr(Pi[b,r] * U[b,dir,r] * (Pi[b_up,r_up] / U[b,dir,r]))
         end
 
     # Calculate potential
