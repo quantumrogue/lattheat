@@ -79,8 +79,8 @@ module ZQCD
     include("ZQCDAction.jl")
         export zqcd_action
 
-    # include("ZQCDForce.jl")
-    #     export zqcd_force
+    include("ZQCDForce.jl")
+        export zqcd_force
 
 
 

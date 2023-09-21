@@ -41,6 +41,11 @@ Base.:*(a::SU2,b::SU2alg) = a*alg2mat(b)
 Base.:/(a::SU2alg,b::SU2) = alg2mat(a)/b
 Base.:\(a::SU2,b::SU2alg) = a\alg2mat(b)
 
+## ================ PIETRO ===============
+Base.:*(a::SU2alg,b::M2x2) = alg2mat(a)*b
+Base.:*(a::M2x2,b::SU2alg) = a*alg2mat(b)
+## ========================================
+
 
 """
     function Base.exp(a::T, t::Number=1) where {T <: Algebra}

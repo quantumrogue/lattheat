@@ -61,7 +61,7 @@ include("ZQCD/ZQCD.jl")
 using .ZQCD
 export ZQCDParm, ZQCDworkspace
 export zqcd_action
-# export zqcd_force
+export zqcd_force
 
 
 end # module

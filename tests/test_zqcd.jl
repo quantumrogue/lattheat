@@ -13,7 +13,7 @@ using LatticeGPU
 
 
 # Set lattice/block size
-lp = SpaceParm{3}((16,16,16), (4,4,4))
+lp = SpaceParm{3}((8,8,8), (4,4,4))
 println("Space  Parameters: ", lp)
 
 # Seed RNG
@@ -42,22 +42,19 @@ zws  = ZQCDworkspace(PREC, lp)
 
 
 # Main program ==========================================
-println("Allocating fields")
+println("Allocating U")
 U = vector_field(GRP{PREC}, lp)
 fill!(U, one(GRP{PREC}))
 
+println("Allocating Z")
 Σ = scalar_field(PREC,lp)
 Π = scalar_field(ALG{PREC},lp)
 
-# println("Time to take the configuration to memory: ")
-# @time Ucpu = Array(U)
-# @time Σcpu = Array(Σ)
-# @time Πcpu = Array(Π)
 
+# println("Try to compute the action")
+# @time S = zqcd_action(U,Σ,Π,lp,zp,gp,ymws)
+# println(S)
 
-println("Try to compute the action")
-@time S = zqcd_action(U,Σ,Π,lp,zp,gp,ymws)
-println(S)
-@time S = zqcd_action(U,Σ,Π,lp,zp,gp,ymws)
-println(S)
-
+println("Try to compute the forces")
+@time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
+@time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)

@@ -55,16 +55,6 @@ function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS
             sp.c3 * pi2 * sigma2
 
     S *= 4. / beta
-
-    # # Calculate gauge action
-    #     for I in N:-1:1
-    #         b_u1, r_u1 = up((b, r), I, lp)
-    #         for J in 1:I-1
-    #                 b_u2, r_u2 = up((b,r), J, lp)
-    #                 S -= beta/2. * tr( U[b,I,r] * U[b_u1,J,r_u1] / U[b_u2,I,r_u2] / U[b,J,r]) 
-    #         end
-    #     end
-
         
     I = point_coord((b,r), lp)
     act[I] = S
