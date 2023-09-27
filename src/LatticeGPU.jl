@@ -64,4 +64,12 @@ export zqcd_action
 export zqcd_force
 
 
+include("Phi4/Phi4.jl")
+
+export Phi4Parm, Phi4workspace
+export randomize!
+export phi4_action
+export phi4_force
+export HMC!
+
 end # module
