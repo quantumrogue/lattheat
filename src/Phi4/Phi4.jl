@@ -122,7 +122,7 @@ module Phi4
             Fϕ[b,r] = 2. * phi + 4. * ϕp.λ*(phi*phi-one(TS))*phi
             for μ in 1:N
                 up_b, up_r, dw_b, dw_r = updw((b,r),μ,lp)
-                Fϕ[b,r] -=  2. * ϕp.κ * (ϕ[up_b,up_r] - ϕ[dw_b,dw_r])
+                Fϕ[b,r] -=  2. * ϕp.κ * (ϕ[up_b,up_r] + ϕ[dw_b,dw_r])
             end       
             return nothing 
         end
