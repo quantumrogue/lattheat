@@ -65,11 +65,9 @@ module Phi4
             return nothing
         end
         function krnl_assign_scalar!(f::AbstractArray{T},m,ϕp::Phi4Parm) where T
-            SR2::typeof(ϕp.κ) = 1.4142135623730951
-            
+            # SR2::typeof(ϕp.κ) = 1.4142135623730951
             b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
-            f[b,r] = m[b,r] * SR2
-
+            f[b,r] = m[b,r]
             return nothing
         end
     ## ========================================================================================================
@@ -125,6 +123,8 @@ module Phi4
                 Fϕ[b,r] -=  2. * ϕp.κ * (ϕ[up_b,up_r] + ϕ[dw_b,dw_r])
             end       
             return nothing 
+
+            return nothing
         end
     ## ========================================================================================================
 
@@ -137,49 +137,63 @@ module Phi4
             return Sϕ + Sπ
         end
 
-        function MD!(mom,ϕ, int::IntrScheme{NI, T}, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}) where {NI, T <: AbstractFloat}
-            @timeit "MD evolution" begin
+        # function MD!(mom,ϕ, int::IntrScheme{NI, T}, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}) where {NI, T <: AbstractFloat}
+        #     @timeit "MD evolution" begin
 
-                phi4_force(ϕws,ϕ,ϕp,lp)
-                mom .= mom .- (int.r[1]*int.eps) .* ϕws.frc
+        #         phi4_force(ϕws,ϕ,ϕp,lp)
+        #         mom .= mom .- (int.r[1]*int.eps) .* ϕws.frc
 
-                for i in 1:int.ns
-                    k   = 2
-                    off = 1
-                    for j in 1:NI-1
-                        ϕ .= ϕ .+ (int.r[k]*int.eps) .* mom
+        #         for i in 1:int.ns
+        #             k   = 2
+        #             off = 1
+        #             for j in 1:NI-1
+        #                 ϕ .= ϕ .+ (int.r[k]*int.eps) .* mom
 
-                        if k == NI
-                            off = -1
-                        end
-                        k += off
+        #                 if k == NI
+        #                     off = -1
+        #                 end
+        #                 k += off
                         
-                        phi4_force(ϕws,ϕ,ϕp,lp)
-                        if (i < int.ns) && (k == 1)
-                            mom  .= mom .- (2*int.r[k]*int.eps) .* ϕws.frc
-                        else
-                            mom  .= mom .-   (int.r[k]*int.eps) .* ϕws.frc
-                        end
-                        k += off
-                    end
-                end
+        #                 phi4_force(ϕws,ϕ,ϕp,lp)
+        #                 if (i < int.ns) && (k == 1)
+        #                     mom  .= mom .- (2*int.r[k]*int.eps) .* ϕws.frc
+        #                 else
+        #                     mom  .= mom .-   (int.r[k]*int.eps) .* ϕws.frc
+        #                 end
+        #                 k += off
+        #             end
+        #         end
+        #     end
+        #     return nothing
+        # end
 
-
-
-            end
+        function MD!(π,ϕ,Δτ, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}) where {T <: AbstractFloat}
+            phi4_force(ϕws,ϕ,ϕp,lp)
+            π .= π .- Δτ/2 .* ϕws.frc
+            ϕ .= ϕ .+ Δτ .* π
+        
+            phi4_force(ϕws,ϕ,ϕp,lp)
+            π .= π .- Δτ/2 .* ϕws.frc
+        
             return nothing
         end
 
         function HMC!(ϕ,  int::IntrScheme, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}; noacc=false) where T
             @timeit "HMC trajectory" begin
+                # Copy gauge fields
                 ϕws.ϕ .= ϕ
 
+                # Initialize momenta
                 randomize!(ϕws.mom,ϕws,ϕp,lp)
 
+                # Calculate initial hamiltonian
                 Hin = hamiltonian(ϕws.mom,ϕ,lp,ϕp,ϕws)
 
-                MD!(ϕws.mom,ϕ,int,lp,ϕp,ϕws)
+                # Perform molecular dynamics stes
+                for _ in 1:int.ns MD!(ϕws.mom,ϕ,int.eps,lp,ϕp,ϕws) end
+                # MD!(ϕws.mom,ϕ,int,lp,ϕp,ϕws)
 
+                # Perform metropolis
                 ΔH = hamiltonian(ϕws.mom,ϕ,lp,ϕp,ϕws) - Hin
                 pacc = exp(-ΔH)
 

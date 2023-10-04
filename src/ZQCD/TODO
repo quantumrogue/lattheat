@@ -54,3 +54,7 @@ Why not using shared memory in blocks?
 
    Formula (35)
    compare to row 72
+  
+
+4. Why does momenta update in MD! has + sign???
+5. Why in randomize! everything is multiplied by \pi?
