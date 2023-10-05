@@ -10,10 +10,10 @@
   - Test consistency
 
 `ZQCDFields.jl`
-  - Write `randomize` and `krnl_assign_SU2` (maybe simply reusable from ScalarFields.jl?)
+  |done! <---  - Write `randomize` and `krnl_assign_SU2` (maybe simply reusable from ScalarFields.jl?)
 
 `ZQCDForce.jl`
-  |done! <---  - Write `force_zqcd` and `krnl_force_zqcd!`
+  - Write `force_zqcd` and `krnl_force_zqcd!`
   - Test consistency
 
 `ZQCDHMC.jl`
