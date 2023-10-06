@@ -3,7 +3,7 @@ using CUDA, Logging, StructArrays, Random
 CUDA.allowscalar(true)
 import Pkg
 # Pkg.activate("/lhome/ific/a/alramos/s.images/julia/workspace/LatticeGPU")
-#Pkg.activate("/home/alberto/code/julia/LatticeGPU")
+Pkg.activate("./LatticeGPU")
 using LatticeGPU
 
 println(CUDA.device())

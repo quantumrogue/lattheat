@@ -82,6 +82,12 @@ module ZQCD
     include("ZQCDForce.jl")
         export zqcd_force
 
+    include("ZQCDFields.jl")
+        export randomize!
+
+    include("ZQCDHMC.jl")
+        export hamiltonian
+
 
 
 end

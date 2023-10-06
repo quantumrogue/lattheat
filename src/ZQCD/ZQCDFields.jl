@@ -10,35 +10,26 @@
 ### created: Tue 12 Sep 12:15:09 CEST 2023
 ###                               
 
-function randomize!(f, lp::SpaceParm, ymws::YMworkspace, zws::ZQCDworkspace)
-    
-    @timeit "Randomize gauge field" begin
-        m = CUDA.randn(ymws.PRC, lp.bsz, 3, lp.rsz)
-        CUDA.@sync begin
-            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_assign_SU2!(f,m,lp)
-        end
-    end
+function randomize!(SIGMA,PI, lp::SpaceParm, ymws::YMworkspace)
 
     @timeit "Randomize ZQCD field" begin
         m = CUDA.randn(ymws.PRC, lp.bsz, 4, lp.rsz)
         CUDA.@sync begin
-            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_assign_SU2!(f,m,sp,lp)
+            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_assign_ZQCD!(SIGMA,PI,m)
         end
     end
 
     return nothing
 end
 
-function krnl_assign_ZQCD!(Z::AbstractArray{T}, m, sp::ScalarParm{NS}, lp::SpaceParm) where {T, NS}
+function krnl_assign_ZQCD!(Σ::AbstractArray{TS},Π::AbstractArray{TP}, m) where {TS, TP}
 
     # Think about precision here
-    SR2::eltype(sp.kap) = 1.4142135623730951
+    # SR2::eltype(sp.kap) = 1.4142135623730951
     
     b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
-    for i in 1:NS
-        f[b,i,r] = SU2fund(complex(m[b,1,i,r]*SR2, m[b,2,i,r]*SR2),
-                           complex(m[b,3,i,r]*SR2, m[b,4,i,r]*SR2))
-    end
+    Σ[b,r] = m[b,1,r]
+    Π[b,r] = SU2alg{TS}(m[b,2,r],m[b,3,r],m[b,4,r])
 
     return nothing
 end

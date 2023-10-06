@@ -55,6 +55,22 @@ println("Allocating Z")
 # @time S = zqcd_action(U,Σ,Π,lp,zp,gp,ymws)
 # println(S)
 
-println("Try to compute the forces")
-@time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
-@time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
+# println("Try to compute the forces")
+# @time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
+# @time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
+
+
+
+## --------------------------------- HMC 
+ymws.U1   .= U
+zws.Sigma .= Σ
+zws.Pi    .= Π
+
+
+LatticeGPU.ZQCD.randomize!(zws.momSigma,zws.momPi,lp,ymws)
+LatticeGPU.YM.randomize!(ymws.mom, lp, ymws)
+
+
+Hin = LatticeGPU.ZQCD.hamiltonian(ymws.mom,U,zws.momSigma,zws.momPi,Σ,Π,lp,zp,gp,ymws)
+
+# hamiltonian(mom,)

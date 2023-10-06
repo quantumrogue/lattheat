@@ -62,6 +62,8 @@ using .ZQCD
 export ZQCDParm, ZQCDworkspace
 export zqcd_action
 export zqcd_force
+export randomize!
+export hamiltonian
 
 
 include("Phi4/Phi4.jl")
