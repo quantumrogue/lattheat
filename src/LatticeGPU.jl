@@ -59,5 +59,6 @@ include("HotSU2/HotSU2.jl")
 
 using .HotSU2
 export HotSU2Param, HotSU2Workspace
+export hotSU2_action
 
 end # module
