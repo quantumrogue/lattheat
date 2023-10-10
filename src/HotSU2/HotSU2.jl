@@ -17,6 +17,9 @@ struct HotSU2Param{T}
     b1::T
     b2::T
 end
+function Base.show(io::IO, hp::HotSU2Param{T}) where {T}
+
+end
 
 function HotSU2Param(r::T, g2::T, beta::T) where {T}
     c1 = 0.0311994*r^2 + 0.0135415*g2
@@ -28,6 +31,7 @@ function HotSU2Param(r::T, g2::T, beta::T) where {T}
             (1/(16*pi^2)) * ((80*c2^2+4*c3^2-40*c2)*(log(1.5*beta)+0.08849) - 23.17895*c2 -8.66687)
     return HotSU2Param{T}(c1, c2, c3, b1, b2)
 end
+
 export HotSU2Param
 
 struct HotSU2Workspace{T}
