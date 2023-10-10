@@ -69,9 +69,9 @@ export hamiltonian
 include("Phi4/Phi4.jl")
 
 using .Phi4
-export Phi4Parm, Phi4workspace
+export Phi4Parm, Phi4ParmM2L, Phi4workspace
 export randomize!
-export phi4_action
+export phi4_action, hopping
 export phi4_force
 export hamiltonian, HMC!
 
