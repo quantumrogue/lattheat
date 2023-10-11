@@ -38,7 +38,7 @@ println("Allocating Σ and Π fields")
 Sigma = scalar_field(PREC, lp)
 fill!(Sigma, zero(PREC))
 Pi = scalar_field(ALG{PREC}, lp)
-fill!(Pi, one(ALG{PREC}))
+#fill!(Pi, one(ALG{PREC}))
 
 println("Computing initial action...")
 @time begin

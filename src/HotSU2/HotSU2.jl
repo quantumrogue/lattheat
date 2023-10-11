@@ -55,7 +55,7 @@ struct HotSU2workspace{T}
     end
 end
 function Base.show(io::IO, hsu2ws::HotSU2workspace{T}) where {T}
-    prinlnt(io, "HotSU2workspace")
+    println(io, "HotSU2workspace")
     println(io, "- Σ: ", typeof(hsu2ws.Sigma))
     println(io, "- Π: ", typeof(hsu2ws.Pi))
 end
