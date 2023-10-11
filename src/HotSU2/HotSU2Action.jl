@@ -9,7 +9,7 @@
 ### file:    HotSU2Action.jl
 ### created: Tue Oct  5 11:53:49 2021
 ###    
-function hotSU2_action(U, Sigma, Pi, lp::SpaceParm, sp::HotSU2Param, gp::GaugeParm, ymws::YMworkspace{T}) where {T <: AbstractFloat}
+function hotSU2_action(U, Sigma, Pi, lp::SpaceParm, sp::HotSU2Parm, gp::GaugeParm, ymws::YMworkspace{T}) where {T <: AbstractFloat}
     @timeit "HotSU2 action" begin
         CUDA.@sync begin
             CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_action!(ymws.rm, gp.beta, U, Sigma, Pi, sp, lp)
@@ -20,7 +20,7 @@ function hotSU2_action(U, Sigma, Pi, lp::SpaceParm, sp::HotSU2Param, gp::GaugePa
     return S
 end
 
-function krnl_action!(act, beta,  U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, sp::HotSU2Param{T}, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,T,N,M,B,D}
+function krnl_action!(act, beta,  U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, sp::HotSU2Parm{T}, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,T,N,M,B,D}
 
     b = Int64(CUDA.threadIdx().x)
     r = Int64(CUDA.blockIdx().x)
@@ -52,7 +52,7 @@ function krnl_action!(act, beta,  U::AbstractArray{TG}, Sigma::AbstractArray{TS}
         sp.c2 * pi2 * pi2 +
         sp.c3 * pi2 * Sig2)
 
-    I = point_cord((b,r), lp)
+    I = point_coord((b,r), lp)
     act[I] = S
     return nothing
 end

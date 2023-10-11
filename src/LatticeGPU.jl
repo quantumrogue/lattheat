@@ -58,7 +58,7 @@ export scalar_obs, scalar_corr, mixed_corr, smearing
 include("HotSU2/HotSU2.jl")
 
 using .HotSU2
-export HotSU2Param, HotSU2Workspace
+export HotSU2Parm, HotSU2workspace
 export hotSU2_action
 
 end # module

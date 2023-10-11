@@ -2,8 +2,8 @@ using CUDA, Logging, StructArrays, Random, TimerOutputs
 
 CUDA.allowscalar(true)
 
-import Pkg
-Pkg.activate("/home/aconigli/lattheat")
+#import Pkg
+#Pkg.activate("/home/aconigli/lattheat")
 using  LatticeGPU
 
 # Set Hyperparameters
@@ -22,12 +22,12 @@ println("Space Parameters: ", lp)
 gp = GaugeParm{PREC}(GRP{PREC}, 12, 0.0)
 println("Gauge Parameters:  ", gp)
 
-hp = HotSU2Param(sqrt(5), 5.1, gp.beta)
+hp = HotSU2Parm(sqrt(5), 5.1, gp.beta)
 println("HotSU2 Parameters: ", hp) 
 
 # Allocate workspaces
-ymws   = YMWorkspace(GRP, PREC, lp)
-hsu2ws = HotSU2Workspace(PREC, lp)
+ymws   = YMworkspace(GRP, PREC, lp)
+hsu2ws = HotSU2workspace(PREC, lp)
 
 # Main program
 println("Allocating gauge fields")

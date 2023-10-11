@@ -68,7 +68,6 @@ struct ScalarWorkspace{T}
     mom
     Phi
     function ScalarWorkspace(::Type{T}, n, lp::SpaceParm) where {T <: AbstractFloat}
-
         return new{T}(nscalar_field(SU2fund{T}, n, lp),
                       nscalar_field(SU2fund{T}, n, lp),
                       nscalar_field(SU2fund{T}, n, lp))

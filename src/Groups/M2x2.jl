@@ -87,3 +87,13 @@ end
 fundXpauli(g::SU2fund{T}, ::Type{Pauli{1}}) where T <: AbstractFloat = M2x2{T}(complex(0,1)*g.t2, complex(0,1)*g.t1, complex(0,1)*conj(g.t1),-complex(0,1)*conj(g.t2))
 fundXpauli(g::SU2fund{T}, ::Type{Pauli{2}}) where T <: AbstractFloat = M2x2{T}(-g.t2, g.t1, -conj(g.t1), -conj(g.t2))
 fundXpauli(g::SU2fund{T}, ::Type{Pauli{3}}) where T <: AbstractFloat = M2x2{T}(complex(0,1)*g.t1, -complex(0,1)*g.t2, -complex(0,1)*conj(g.t2), -complex(0,1)*conj(g.t1))
+
+# traces for SU2alg valued fields
+tr_ipau(g::SU2{T}, ::Type{Pauli{1}}) where T <: AbstractFloat = complex(-2. * imag(g.t2), 0.0)
+tr_ipau(g::SU2{T}, ::Type{Pauli{2}}) where T <: AbstractFloat = complex(-2. * real(g.t2), 0.0)
+tr_ipau(g::SU2{T}, ::Type{Pauli{3}}) where T <: AbstractFloat = complex(-2. * imag(g.t1), 0.0)
+
+#Tr(g*i*PauliMatrix)
+tr_ipau(g::M2x2{T}, ::Type{Pauli{1}}) where T <: AbstractFloat = im * (g.u21 + g.u12)
+tr_ipau(g::M2x2{T}, ::Type{Pauli{2}}) where T <: AbstractFloat = g.u21 - g.u12
+tr_ipau(g::M2x2{T}, ::Type{Pauli{3}}) where T <: AbstractFloat = im * (g.u11 - g.u22)
