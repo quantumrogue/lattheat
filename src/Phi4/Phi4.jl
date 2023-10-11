@@ -199,19 +199,36 @@ module Phi4
             return Sϕ + Sπ
         end
 
-        function MD!(mom,ϕ,Δτ, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}) where {T <: AbstractFloat}
-            phi4_force(ϕws,ϕ,ϕp,lp)
-            mom .= mom .- Δτ/2 .* ϕws.frc
-
-            ϕ .= ϕ .+ Δτ .* mom
-        
-            phi4_force(ϕws,ϕ,ϕp,lp)
-            mom .= mom .- Δτ/2 .* ϕws.frc
-        
+        function MD!(mom,ϕ,int::IntrScheme{NI,T}, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}) where {NI,T <: AbstractFloat}
+            if NI==2; 
+                phi4_force(ϕws,ϕ,ϕp,lp)
+                mom .= mom .- int.eps*int.r[1] .* ϕws.frc
+                ϕ   .= ϕ   .+ int.eps*int.r[2] .* mom;     phi4_force(ϕws,ϕ,ϕp,lp)
+                mom .= mom .- int.eps*int.r[1] .* ϕws.frc
+            elseif NI==3
+                ϕ   .= ϕ   .+ int.eps*int.r[1] .* mom;     phi4_force(ϕws,ϕ,ϕp,lp)
+                mom .= mom .- int.eps*int.r[2] .* ϕws.frc
+                ϕ   .= ϕ   .+ int.eps*int.r[3] .* mom;     phi4_force(ϕws,ϕ,ϕp,lp)
+                mom .= mom .- int.eps*int.r[2] .* ϕws.frc
+                ϕ   .= ϕ   .+ int.eps*int.r[1] .* mom
+            end
+            
             return nothing
         end
+        # function MD!(mom,ϕ,Δτ, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}) where {T <: AbstractFloat}
+        #     phi4_force(ϕws,ϕ,ϕp,lp)
+        #     mom .= mom .- Δτ/2 .* ϕws.frc
 
-        function HMC!(ϕ,  int::IntrScheme, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}; noacc=false) where T
+        #     ϕ .= ϕ .+ Δτ .* mom
+        
+        #     phi4_force(ϕws,ϕ,ϕp,lp)
+        #     mom .= mom .- Δτ/2 .* ϕws.frc
+        
+        #     return nothing
+        # end
+
+
+        function HMC!(ϕ,  int::IntrScheme{NI,T}, lp::SpaceParm, ϕp::Phi4Parm, ϕws::Phi4workspace{T}; noacc=false) where {NI,T}
             @timeit "HMC trajectory" begin
                 # Copy gauge fields
                 ϕws.ϕ .= ϕ
@@ -223,7 +240,7 @@ module Phi4
                 Hin = hamiltonian(ϕws.mom,ϕ,lp,ϕp,ϕws)
 
                 # Perform molecular dynamics stes
-                for _ in 1:int.ns MD!(ϕws.mom,ϕ,int.eps,lp,ϕp,ϕws) end
+                for _ in 1:int.ns MD!(ϕws.mom,ϕ,int,lp,ϕp,ϕws) end
 
                 # Perform metropolis
                 ΔH = hamiltonian(ϕws.mom,ϕ,lp,ϕp,ϕws) - Hin
