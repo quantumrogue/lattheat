@@ -19,10 +19,10 @@ Random.seed!(1234)
 lp = SpaceParm{3}((16,16,16), (4,4,4))
 println("Space Parameters: ", lp)
 
-gp = GaugeParm{PREC}(GRP{PREC}, 12, 0.0)
+gp = GaugeParm{PREC}(GRP{PREC}, 12.0, 0.0)
 println("Gauge Parameters:  ", gp)
 
-hp = HotSU2Parm(sqrt(5), 5.1, gp.beta)
+hp = HotSU2Parm(sqrt(5.0), 5.1, gp.beta)
 println("HotSU2 Parameters: ", hp) 
 
 # Allocate workspaces

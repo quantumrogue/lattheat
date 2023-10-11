@@ -36,10 +36,10 @@ function krnl_action!(act, beta,  U::AbstractArray{TG}, Sigma::AbstractArray{TS}
     end
 
     # kinetic term Π
-    pi2 = dot(Pi[b,r], Pi[b,r])
+    pi2 = norm2(Pi[b,r])
     for id in 1:N
         bu, ru = up((b,r), id, lp)
-        S += 2 * (tr(Pi[b,r]*Pi[b,r]) - tr(Pi[b,r] * U[b,dir,r] * Pi[bu,ru] * dag(U[b,dir,r])))
+        S += 2 * (pi2 - tr(Pi[b,r] * U[b,dir,r] * (Pi[bu,ru] * dag(U[b,dir,r])) ))
     end
     S *= (4/beta)
 

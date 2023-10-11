@@ -26,10 +26,6 @@ Base.:*(a::SU2alg{T},b::Number)    where T <: AbstractFloat = SU2alg{T}(a.t1*b,a
 Base.:*(b::Number,a::SU2alg{T})    where T <: AbstractFloat = SU2alg{T}(a.t1*b,a.t2*b,a.t3*b)
 Base.:/(a::SU2alg{T},b::Number)    where T <: AbstractFloat = SU2alg{T}(a.t1/b,a.t2/b,a.t3/b)
 
-# overloading operations for SU2alg
-Base.:*(a::SU2alg,b::M2x2) = alg2mat(a)*b
-Base.:*(a::M2x2,b::SU2alg) = a*alg2mat(b)
-
 function alg2mat(a::SU2alg{T}) where T <: AbstractFloat
 
     u11::Complex{T} = complex(0.0, a.t3)/2
@@ -44,6 +40,11 @@ Base.:*(a::SU2alg,b::SU2) = alg2mat(a)*b
 Base.:*(a::SU2,b::SU2alg) = a*alg2mat(b)
 Base.:/(a::SU2alg,b::SU2) = alg2mat(a)/b
 Base.:\(a::SU2,b::SU2alg) = a\alg2mat(b)
+
+# overloading operations for SU2alg
+Base.:*(a::SU2alg,b::M2x2) = alg2mat(a)*b
+Base.:*(a::M2x2,b::SU2alg) = a*alg2mat(b)
+
 
 
 """
