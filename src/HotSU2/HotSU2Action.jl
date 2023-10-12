@@ -39,12 +39,12 @@ function krnl_action!(act, beta,  U::AbstractArray{TG}, Sigma::AbstractArray{TS}
     pi2 = norm2(Pi[b,r])
     for id in 1:N
         bu, ru = up((b,r), id, lp)
-        S += 2 * (pi2 - tr(Pi[b,r] * U[b,dir,r] * (Pi[bu,ru] * dag(U[b,dir,r])) ))
+        S += 2. * (pi2 - tr(Pi[b,r] * U[b,id,r] * (Pi[bu,ru] * dag(U[b,id,r])) ))
     end
-    S *= (4/beta)
+    S *= (4. /beta)
 
     # potential 
-    S += (4/beta)^3 * 
+    S += (4. /beta)^3 * 
         (sp.b1 * Sig2 + 
         sp.b2 * pi2 + 
         sp.c1 * Sig2 * Sig2 + 
