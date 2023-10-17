@@ -22,49 +22,84 @@ function hamiltonian(mom,U, smom, pmom, Sigma, Pi, lp, zp, gp, ymws)
     return SG+SZ+PG+PZ
 end
 
-# ## NI is the number of intermediate step in the integrator, int.ns the number of trajectories
-# function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm, gp::GaugeParm, sp::ZQCDParm{T}, ymws::YMworkspace{T}, zws::ZQCDWorkspace{T}) where {NI, T <: AbstractFloat}
+function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm, gp::GaugeParm, zp::ZQCDParm{T}, ymws::YMworkspace{T}, zws::ZQCDworkspace{T}) where {NI, T <: AbstractFloat}
 
-#     @timeit "ZQCD MD evolution" begin
-#         # Evaluate initial forces with (U⁽⁰⁾,Z⁽⁰⁾)
-#         YM.force_gauge(ymws, U, gp.c0, gp, lp)
-#         zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
+    @timeit "ZQCD MD evolution" begin
+        # Evaluate initial forces with (U⁽⁰⁾,Z⁽⁰⁾)
+        YM.force_gauge(ymws, U, gp.c0, gp, lp)
+        zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
-#         # Evaluate initial momenta (p⁽⁰⁾,π⁽⁰⁾)
-#         mom  .= mom  .+ (int.r[1]*int.eps) .* ymws.frc1
-#         Smom .= Smom .+ (int.r[1]*int.eps) .* zws.frcSigma
-#         Pmom .= Pmom .+ (int.r[1]*int.eps) .* zws.frcPi
+        # Evaluate initial momenta (p⁽⁰⁾,π⁽⁰⁾)
+        mom  .= mom  .+ (int.r[1]*int.eps) .* ymws.frc1
+        Smom .= Smom .+ (int.r[1]*int.eps) .* zws.frcSigma
+        Pmom .= Pmom .+ (int.r[1]*int.eps) .* zws.frcPi
 
-#         for trajID in 1:int.ns
-#             k   = 2 # what are these things?
-#             off = 1 # what are these things?
+        for trajID in 1:int.ns
+            k   = 2
+            off = 1
 
-#             for leap in 1:ND-1
-#                 U     .= expm.(U, mom, int.eps * int.r[k])
-#                 Sigma .= Sigma .+ (int.eps * int.r[k]) .* Smom
-#                 Pi    .= Pi    .+ (int.eps * int.r[k]) .* Pmom # is in the algebra
+            for leap in 1:NI-1
+                U     .= expm.(U, mom, int.eps * int.r[k])
+                Sigma .= Sigma .+ (int.eps * int.r[k]) .* Smom
+                Pi    .= Pi    .+ (int.eps * int.r[k]) .* Pmom # is in the algebra
 
-#                 if k == NI
-#                     off = -1
-#                 end
-#                 k += off
+                if k == NI
+                    off = -1
+                end
+                k += off
 
-#                 YM.force_gauge(ymws, U, gp.c0, gp, lp)
-#                 zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
+                YM.force_gauge(ymws, U, gp.c0, gp, lp)
+                zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
-#                 if (trajID < int.ns) && (k==1)
-#                     mom  .= mom  .+ (2. * int.r[k]*int.eps) .* ymws.frc1
-#                     Smom .= Smom .+ (2. * int.r[1]*int.eps) .* zws.frcSigma
-#                     Pmom .= Pmom .+ (2. * int.r[1]*int.eps) .* zws.frcPi
-#                 else
-#                     mom .= mom   .+ (int.r[k]*int.eps) .* ymws.frc1
-#                     Smom .= Smom .+ (int.r[1]*int.eps) .* zws.frcSigma
-#                     Pmom .= Pmom .+ (int.r[1]*int.eps) .* zws.frcPi
-#                 end
-#                 k += off
-#             end
-#         end
-#     end
+                if (trajID < int.ns) && (k==1)
+                    mom  .= mom  .+ (2. * int.r[k]*int.eps) .* ymws.frc1
+                    Smom .= Smom .+ (2. * int.r[k]*int.eps) .* zws.frcSigma
+                    Pmom .= Pmom .+ (2. * int.r[k]*int.eps) .* zws.frcPi
+                else
+                    mom  .= mom  .+ (int.r[k]*int.eps) .* ymws.frc1
+                    Smom .= Smom .+ (int.r[k]*int.eps) .* zws.frcSigma
+                    Pmom .= Pmom .+ (int.r[k]*int.eps) .* zws.frcPi
+                end
+                k += off
+            end
+        end
+    end
 
-#     return nothing
-# end
+    return nothing
+end
+
+
+function HMC!(U,Sigma,Pi, int::IntrScheme, lp::SpaceParm, gp::GaugeParm, zp::ZQCDParm, ymws::YMworkspace, zws::ZQCDworkspace; noacc=false)
+    @timeit "HMC trajectory" begin
+        ymws.U1   .= U
+        zws.Sigma .= Sigma
+        zws.Pi    .= Pi
+
+        randomize!(ymws.mom,lp,ymws)
+        randomize!(zws.momSigma,zws.momPi,lp,ymws)
+
+        Hin = hamiltonian(ymws.mom, U, zws.momSigma, zws.momPi, Sigma, Pi, lp, zp, gp, ymws)
+
+        MD!(ymws.mom,U,zws.momSigma,Sigma,zws.momPi,Pi,int,lp,gp,zp,ymws,zws)
+
+        ΔH = hamiltonian(ymws.mom, U, zws.momSigma, zws.momPi, Sigma, Pi, lp, zp, gp, ymws) - Hin
+        pacc = exp(-ΔH)
+
+        acc = true
+        if (noacc)
+            return ΔH, acc
+        end
+        
+        if (pacc < 1.0)
+            r = rand()
+            if (pacc < r) 
+                U     .= ymws.U
+                Sigma .= zws.Sigma
+                Pi    .= zws.Pi
+                acc = false
+            end
+        end
+    end
+    return dh, acc
+end
+HMC!(U,Sigma,Pi, eps,ns, lp::SpaceParm, gp::GaugeParm, zp::ZQCDParm{T}, ymws::YMworkspace, zws::ZQCDworkspace; noacc=false) where T = HMC!(U,Sigma,Pi, omf4(T,eps,ns), lp, gp, zp, ymws, zws, noacc=noacc)

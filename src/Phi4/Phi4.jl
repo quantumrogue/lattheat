@@ -12,6 +12,8 @@ module Phi4
     using ..Groups
     using ..Fields
     using ..MD
+    using ..YM
+    import ..YM: HMC!, randomize!, MD!, hamiltonian
 
     import Base.show
 

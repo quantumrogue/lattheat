@@ -73,6 +73,6 @@ export Phi4Parm, Phi4ParmM2L, Phi4workspace
 export randomize!
 export phi4_action, hopping
 export phi4_force
-export hamiltonian, HMC!
+export hamiltonian, MD!, HMC!
 
 end # module

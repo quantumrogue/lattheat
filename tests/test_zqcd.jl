@@ -60,17 +60,8 @@ println("Allocating Z")
 # @time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
 
 
+Sigma = Σ
+Pi    = Π
+int = omf4(PREC,0.05,20)
 
-## --------------------------------- HMC 
-ymws.U1   .= U
-zws.Sigma .= Σ
-zws.Pi    .= Π
-
-
-LatticeGPU.ZQCD.randomize!(zws.momSigma,zws.momPi,lp,ymws)
-LatticeGPU.YM.randomize!(ymws.mom, lp, ymws)
-
-
-Hin = LatticeGPU.ZQCD.hamiltonian(ymws.mom,U,zws.momSigma,zws.momPi,Σ,Π,lp,zp,gp,ymws)
-
-# hamiltonian(mom,)
+HMC!(U,Σ,Π,int,lp,gp,zp,ymws,zws)

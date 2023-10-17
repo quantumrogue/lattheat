@@ -18,7 +18,7 @@ module ZQCD
     using ..Fields
     using ..MD
     using ..YM
-    import ..YM: HMC!, randomize!, MD!, force_gauge, FlowIntr
+    import ..YM: HMC!, randomize!, MD!, force_gauge, FlowIntr, hamiltonian
 
     import Base.show
 
@@ -86,7 +86,7 @@ module ZQCD
         export randomize!
 
     include("ZQCDHMC.jl")
-        export hamiltonian
+        export hamiltonian, MD!, HMC!
 
 
 
