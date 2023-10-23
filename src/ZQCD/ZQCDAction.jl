@@ -11,12 +11,13 @@
 ###                               
 
 function zqcd_action(U, Sigma, Pi, lp::SpaceParm, sp::ZQCDParm, gp::GaugeParm, ymws::YMworkspace{T}) where T<:AbstractFloat
+
     @timeit "ZQCD action" begin
         CUDA.@sync begin
             CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_zqcd_act!(ymws.rm, gp.beta, U, Sigma, Pi, sp, lp)
         end
     end
-        
+    
     S = CUDA.reduce(+, ymws.rm)
     return S
 end
@@ -37,24 +38,30 @@ function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS
         end
         S *= Sigma[b,r]
         sigma2 = Sigma[b,r]*Sigma[b,r]
-        S += sigma2
+        S += 3. * sigma2
 
     # Calculate kinetic action for Π
         pi2 = norm2(Pi[b,r])
         S += 2. * 3. * (- pi2/2.)
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
-            S -= 2. * tr(Pi[b,r] * U[b,dir,r] * (Pi[b_up,r_up] / U[b,dir,r]))
+            S -= 2. * convert(eltype(act),
+                real( 
+                    tr( (Pi[b,r] * U[b,dir,r]) * (Pi[b_up,r_up] * dag(U[b,dir,r])) ) 
+                )
+            )
         end
 
+        S *= 4. / beta
+
     # Calculate potential
-        S += sp.b1 * sigma2 + 
+        S += (4. / beta)^3 * (
+            sp.b1 * sigma2 + 
             sp.b2 * pi2 + 
             sp.c1 * sigma2 * sigma2 + 
             sp.c2 * pi2 * pi2 +
             sp.c3 * pi2 * sigma2
-
-    S *= 4. / beta
+        )
         
     I = point_coord((b,r), lp)
     act[I] = S

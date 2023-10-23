@@ -52,7 +52,6 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
             4. * zp.c1 * Sigma[b,r]*Sigma[b,r]*Sigma[b,r]
 
         for dir in 1:N
-            # Fetch the coordinates of point after and before in direction dir
             up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
 
             fSigma[b,r] -= Sigma[up_b,up_r] - Sigma[dw_b,dw_r]

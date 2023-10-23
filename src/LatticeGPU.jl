@@ -60,19 +60,19 @@ include("ZQCD/ZQCD.jl")
 
 using .ZQCD
 export ZQCDParm, ZQCDworkspace
+export randomize!
 export zqcd_action
 export zqcd_force
-export randomize!
-export hamiltonian
+export zqcd_hamiltonian, zqcd_MD!
 
 
-include("Phi4/Phi4.jl")
+# include("Phi4/Phi4.jl")
 
-using .Phi4
-export Phi4Parm, Phi4ParmM2L, Phi4workspace
-export randomize!
-export phi4_action, hopping
-export phi4_force
-export hamiltonian, MD!, HMC!
+# using .Phi4
+# export Phi4Parm, Phi4ParmM2L, Phi4workspace
+# export randomize!
+# export phi4_action, hopping
+# export phi4_force
+# export hamiltonian, MD!, HMC!
 
 end # module

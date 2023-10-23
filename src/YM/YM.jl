@@ -106,11 +106,11 @@ function Base.show(io::IO, ymws::YMworkspace)
     println(io, "Workspace for Group:   ", ymws.GRP)
     println(io, "              Algebra: ", ymws.ALG)
     println(io, "Precision:             ", ymws.PRC)
-    if ymws.fpln == nothing
-        println(io, "  - Running in memory efficient mode")
-    else
-        println(io, "  - Running in computing efficient mode")
-    end
+    # if ymws.fpln == nothing
+    #     println(io, "  - Running in memory efficient mode")
+    # else
+    #     println(io, "  - Running in computing efficient mode")
+    # end
     return nothing
 end
 

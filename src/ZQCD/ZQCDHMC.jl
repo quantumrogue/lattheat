@@ -100,6 +100,6 @@ function HMC!(U,Sigma,Pi, int::IntrScheme, lp::SpaceParm, gp::GaugeParm, zp::ZQC
             end
         end
     end
-    return dh, acc
+    return ΔH, acc
 end
 HMC!(U,Sigma,Pi, eps,ns, lp::SpaceParm, gp::GaugeParm, zp::ZQCDParm{T}, ymws::YMworkspace, zws::ZQCDworkspace; noacc=false) where T = HMC!(U,Sigma,Pi, omf4(T,eps,ns), lp, gp, zp, ymws, zws, noacc=noacc)

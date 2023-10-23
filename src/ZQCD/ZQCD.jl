@@ -54,7 +54,6 @@ module ZQCD
         println(io, "c₃ = $(sp.c3)")
 
     end
-    export ZQCDParm
 
     struct ZQCDworkspace{T}
         frcSigma
@@ -72,9 +71,12 @@ module ZQCD
             scalar_field(SU2alg{T},lp) # Π : (3 scalar field ∼) SU2 algebra matrix (Π = i Πₐ/2⋅σₐ)
         )
     end
+
+    export ZQCDParm
     export ZQCDworkspace
 
-
+    include("ZQCDFields.jl")
+        export randomize!
 
     include("ZQCDAction.jl")
         export zqcd_action
@@ -82,11 +84,8 @@ module ZQCD
     include("ZQCDForce.jl")
         export zqcd_force
 
-    include("ZQCDFields.jl")
-        export randomize!
-
     include("ZQCDHMC.jl")
-        export hamiltonian, MD!, HMC!
+        export zqcd_hamiltonian, zqcd_MD!
 
 
 
