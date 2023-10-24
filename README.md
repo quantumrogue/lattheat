@@ -5,7 +5,7 @@ This code is an independent copy of [`su2-higgs`](https://igit.ific.uv.es/gtelo/
 We are simulating a 3d theory with an $SU(2)$ gauge field $U_{ij}$  and 1 adjoint scalar field called Z, parameterized as
 $$Z = \frac{\Sigma}{2} + i \frac{\Pi_a}{2}\sigma_a \in SU(2)$$
 The ZQCD lattice action is 
-$$S = S_{W_3} + S_Z + V(\Sigma,\Pi)$$
+$$S = S_{w}^{d=3} + S_Z + V(\Sigma,\Pi)$$
 where 
 $$S_Z = \bigg(\frac{4}{\beta}\bigg)\biggl(\sum_{n,i} [\Sigma^2(n) - \Sigma(n)\Sigma(n+\hat i)] + 2\sum_{n,i}      \text{tr}[\Pi(n)^2 - \Pi(n)U_i(n)\Pi(n+\hat i)U_i^\dagger(n)]  \biggr)$$
 and 
