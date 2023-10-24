@@ -14,7 +14,14 @@ $$V = \biggl(\frac{4}{\beta}\biggr)^3\sum_n[\hat b_1\Sigma^2 + \hat b_2\Pi_a^2 +
 
 ## HMC
 For the HMC we need to compute forces.
-
+### Forces
+We collect here the forces used in the HMC. For $\Sigma$:
+$$\frac{\partial}{\partial \Sigma_x} (S_Z+V)= \biggl(\frac{4}{\beta}\biggr)\bigg[6\Sigma_x - \sum_{\hat i}(\Sigma_{x+\hat i}+\Sigma_{x-\hat i}) +  \biggl(\frac{4}{\beta}\biggr)^2(2b_1\Sigma_x + 4c_1 \Sigma_x^3 + 2 c_3 \Sigma_x \Pi_a^2) \bigg]$$
+for $\Pi$:
+$$\frac{\partial S_Z}{\partial \Pi_a(x)} = 2 \Big(\frac{4}{\beta}\Big)\text{tr} \biggl[i\sigma_a\Bigl(2\Pi_x - U_i(x)\Pi_{x+\hat i}U_i^\dagger(x)+U_i^\dagger(x-\hat i)\Pi_{x-\hat i}U_i(x-\hat i) \Bigr)\biggr]$$
+$$\frac{\partial V}{\partial \Pi_a(x)} = -16c_2 \Big(\frac{4}{\beta}\Big)^3\biggl(\frac{b_2+c_3\Sigma_x^2}{4c_2}+2\det\Pi_x\biggr)\text{tr}(i\sigma_a \Pi_x)$$
+and for gauge fields
+$$\frac{\partial S_Z}{\partial U_i(x)} = \frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x - U_i^\dagger(x)\Pi_x U_i(x)\Pi_{x+\hat i}\Bigr)\biggr]$$
 ### Some useful formulas
 #### General $SU(2)$ things
 An algebra matrix, as $\Pi$ satisfy
@@ -40,11 +47,3 @@ $$\det(sX+M) = \det\Pi\det\biggl(\mathbf 1 +\frac{s}{-\det\Pi}X\Pi\biggr)$$
 and we can use the fact that $\frac{\text{d}}{\text{d}t}\det(\mathbf 1 + tM)=\text{tr}(M)$ to conclude that
 $$\frac{\text{d}}{\text{d}s}\det(sX + M) = -\text{tr}(XM)$$
 
-## Forces
-We collect here the forces used in the HMC. For $\Sigma$:
-$$\frac{\partial}{\partial \Sigma_x} (S_Z+V)= \biggl(\frac{4}{\beta}\biggr)\bigg[6\Sigma_x - \sum_{\hat i}(\Sigma_{x+\hat i}+\Sigma_{x-\hat i}) +  \biggl(\frac{4}{\beta}\biggr)^2(2b_1\Sigma_x + 4c_1 \Sigma_x^3 + 2 c_3 \Sigma_x \Pi_a^2) \bigg]$$
-for $\Pi$:
-$$\frac{\partial S_Z}{\partial \Pi_a(x)} = 2 \Big(\frac{4}{\beta}\Big)\text{tr} \biggl[i\sigma_a\Bigl(2\Pi_x - U_i(x)\Pi_{x+\hat i}U_i^\dagger(x)+U_i^\dagger(x-\hat i)\Pi_{x-\hat i}U_i(x-\hat i) \Bigr)\biggr]$$
-$$\frac{\partial V}{\partial \Pi_a(x)} = -16c_2 \Big(\frac{4}{\beta}\Big)^3\biggl(\frac{b_2+c_3\Sigma_x^2}{4c_2}+2\det\Pi_x\biggr)\text{tr}(i\sigma_a \Pi_x)$$
-and for gauge fields
-$$\frac{\partial S_Z}{\partial U_i(x)} = \frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x - U_i^\dagger(x)\Pi_x U_i(x)\Pi_{x+\hat i}\Bigr)\biggr]$$
