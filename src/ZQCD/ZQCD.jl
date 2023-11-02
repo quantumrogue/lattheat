@@ -85,7 +85,7 @@ module ZQCD
         export zqcd_force
 
     include("ZQCDHMC.jl")
-        export zqcd_hamiltonian, zqcd_MD!
+        export hamiltonian, MD!, HMC!
 
 
 

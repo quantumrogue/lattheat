@@ -63,7 +63,7 @@ export ZQCDParm, ZQCDworkspace
 export randomize!
 export zqcd_action
 export zqcd_force
-export zqcd_hamiltonian, zqcd_MD!
+export hamiltonian, MD!, HMC!
 
 
 # include("Phi4/Phi4.jl")
