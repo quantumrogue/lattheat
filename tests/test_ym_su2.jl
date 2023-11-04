@@ -3,7 +3,7 @@ using ArgParse
 
 CUDA.allowscalar(true)
 import Pkg
-Pkg.activate("../LatticeGPU")
+Pkg.activate("/home/pbutti/lattheat/LatticeGPU")
 using LatticeGPU
 
 function parse_commandline()
