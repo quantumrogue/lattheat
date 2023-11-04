@@ -64,7 +64,7 @@ function main()
     println("# Precision:         ", PREC)
 
     # gp = GaugeParm(β, 1.0, (0.0,0.0), 2)
-    gp = GaugeParm(GRP{PREC},β,0.)
+    gp = GaugeParm{PREC}(GRP{PREC},β,0.)
 
 
 
