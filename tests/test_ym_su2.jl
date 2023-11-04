@@ -35,6 +35,28 @@ function parse_commandline()
     return parse_args(s)
 end
 
+
+function gaugeheater!(f, lp::SpaceParm, ymws::YMworkspace)
+    @timeit "Randomize SU(2) gauge field" begin
+        m = CUDA.randn(ymws.PRC, lp.bsz,lp.ndim,4,lp.rsz)
+        CUDA.@sync begin
+            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_gaugeheater!(f,m,lp)
+        end
+        f .= unitarize.(f)
+    end
+    return nothing
+end
+function krnl_gaugeheater!(f, m, lp::SpaceParm{N,M,BC_PERIODIC,D}) where {N,M,D}
+    b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
+    for id in 1:lp.ndim
+        f[b,id,r] = SU2(complex(m[b,id,1,r], m[b,id,2,r]), complex(m[b,id,3,r],m[b,id,4,r]))
+    end
+    return nothing
+end
+
+
+
+
 function main()
     parsed_args = parse_commandline()
 
@@ -83,6 +105,8 @@ function main()
     ns  = 20
     
     # pl = Vector{Float64}()
+    gaugeheater!(U,lp,ymws)
+
     
     println("## ======================== Production ====================")
     for i in 1:10000
