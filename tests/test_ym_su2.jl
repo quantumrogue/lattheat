@@ -58,11 +58,15 @@ function main()
     elseif dim==3
         lp = SpaceParm{3}((T,L,L), (1,4,4))
     end
-    gp = GaugeParm(β, 1.0, (0.0,0.0), 2)
 
     GRP  = SU2
     PREC = Float64
     println("# Precision:         ", PREC)
+
+    # gp = GaugeParm(β, 1.0, (0.0,0.0), 2)
+    gp = GaugeParm(GRP{PREC},β,0.)
+
+
 
     println("# Allocating YM workspace")
     ymws = YMworkspace(GRP, PREC, lp)
