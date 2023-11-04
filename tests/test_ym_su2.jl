@@ -82,21 +82,15 @@ function main()
     dt  = 0.05
     ns  = 20
     
-    pl = Vector{Float64}()
-    # println("# Thermalization")
-    # for i in 1:10
-    #     @time dh, acc = HMC!(U,Phi, dt,ns,lp, gp, sp, ymws, sws, noacc=true)
-    #     println("# HMC: ", acc, " ", dh)
-    #     push!(pl, plaquette(U,lp, gp, ymws))
-    #     println("# Plaquette: ", pl[end], "\n")
-    # end
+    # pl = Vector{Float64}()
     
-    println("## Production")
+    println("## ======================== Production ====================")
     for i in 1:10000
         @time dh, acc = HMC!(U,Phi, dt,ns,lp, gp, sp, ymws, sws)
-        println("# HMC: ", acc, " ", dh)
-        push!(pl, plaquette(U,lp, gp, ymws))
-        println("# Plaquette: ", pl[end], "\n")
+        # println("# HMC: ", acc, " ", dh)
+        # push!(pl, plaquette(U,lp, gp, ymws))
+        println("# Plaquette: ", plaquette(U,lp, gp, ymws), "\n")
+
     end
 end
 
