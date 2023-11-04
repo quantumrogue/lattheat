@@ -86,7 +86,7 @@ function main()
     
     println("## ======================== Production ====================")
     for i in 1:10000
-        @time dh, acc = HMC!(U,Phi, dt,ns,lp, gp, sp, ymws, sws)
+        @time dh, acc = HMC!(U, dt,ns,lp, gp, ymws)
         # println("# HMC: ", acc, " ", dh)
         # push!(pl, plaquette(U,lp, gp, ymws))
         println("# Plaquette: ", plaquette(U,lp, gp, ymws), "\n")
