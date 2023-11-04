@@ -89,7 +89,7 @@ function main()
         @time dh, acc = HMC!(U, dt,ns,lp, gp, ymws)
         # println("# HMC: ", acc, " ", dh)
         # push!(pl, plaquette(U,lp, gp, ymws))
-        println("# Plaquette: ", plaquette(U,lp, gp, ymws), "\n")
+        println("# Plaquette( $i): ", plaquette(U,lp, gp, ymws), "\n")
 
     end
 end
