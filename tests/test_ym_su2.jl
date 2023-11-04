@@ -22,7 +22,7 @@ function parse_commandline()
         "--beta"
             help = "Gauge coupling"
             required = true
-            arg_type = Float
+            arg_type = Float64
         "--dims"
             help = "Number of total dimension"
             required = true
