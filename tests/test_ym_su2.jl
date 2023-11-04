@@ -27,9 +27,9 @@ function parse_commandline()
             help = "Number of total dimension"
             required = true
             arg_type = Int
-        "arg1"
-            help = "Output file name"
-            required = true
+        # "arg1"
+        #     help = "Output file name"
+        #     required = true
     end
 
     return parse_args(s)
