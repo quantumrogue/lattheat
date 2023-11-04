@@ -45,7 +45,7 @@ function main()
 
     L = parsed_args["space"]
     T = parsed_args["time"]
-    dim = parsed_args["dim"]
+    dim = parsed_args["dims"]
     β = parsed_args["beta"]
 
     if L%4!=0
