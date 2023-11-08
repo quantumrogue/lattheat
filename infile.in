@@ -1,0 +1,49 @@
+#
+# Please, use meaningful comments to describe the simulation performed
+#
+
+[Run]
+user = "guilherme"
+host = "laptop"
+run_dir = "simulations/"
+name = "test_io_"
+seed = 1200
+
+[Simulation]
+size = [8,8,8,16]
+blocks = [4,4,4,4]
+c0 = 1.0
+beta = 6.0
+kappa = [0.12985, 0.1317]
+eta = [0.003, 0.004]
+xi = [0.0001, 0.0002, 5.0e-5, 0.0005, 0.0001]
+mu = 0.001
+
+[HMC]
+integrator = "OMF4" # "LEAPFROPG", "OMF2", "OMF4"
+ns = 25
+eps = 0.1
+nthm = 10
+ntraj = 8000
+
+[Checkpoints]
+dtr = 1000
+cnfg_dir = "cnfg/"
+
+[Flow]
+flow = 0 #0: no GF; 1: Full GF; 2: adapt step size GF
+type = "Wilson" # "Wilson", "Zeuthen", "Both"
+tol = 1.0E-7
+steps = 20
+s = 10
+times = [1.5, 2.0] #starting time(s) for GF measurement - if
+iters = [5, 5] #nr of GF iterations for each starting time
+dtr = 1 #MC interval for flow call
+dt = 0.005 #dt
+
+[Smearing]
+corr = 1 # 1=measure correlation functions;, 0=no measurement
+sus = 10
+sdt = 0.01
+sss = 10
+srs = 0.001
