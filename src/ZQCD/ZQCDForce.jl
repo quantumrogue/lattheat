@@ -37,8 +37,8 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
 
-            fgauge[b,dir,r] +=  projalg(8. * gp.beta, U[b,dir,r] * Pi[b_up,r_up] * dag(U[b,dir,r]) * Pi[b,r])
-            fgauge[b,dir,r] -=  projalg(8. * gp.beta, dag(U[b,dir,r]) * Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
+            fgauge[b,dir,r] +=  projalg(Complex(8*gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
+            fgauge[b,dir,r] -=  projalg(Complex(8*gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
         end
     # -----------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
 
     # Compute force for Σ -------------------------------------------------------
         fSigma[b,r] = zero(TS)
-        fSigma[b,r] = 6. .* Sigma[b,r] + 
+        fSigma[b,r] = 6. .* Sigma[b,r] +
             (4. / gp.beta)*(4. / gp.beta)*( 2. * zp.b1*Sigma[b,r] + 4. * zp.c1*Sigma[b,r]*Sigma[b,r]*Sigma[b,r] + 2. * zp.c3 * Sigma[b,r] * Pi2)
         for dir in 1:N
             up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
@@ -60,7 +60,7 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
     # Compute force for Π ---------------------------------------------------------
         for dir in 1:N
             up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
-            fPi[b,r] += projalg(8. ./ gp.beta,
+            fPi[b,r] += projalg(Complex(8. / gp.beta),
                 2. *Pi[b,r] - U[b,dir,r]*Pi[up_b,up_r]*dag(U[b,dir,r])  -  dag(U[dw_b,dir,dw_r])*Pi[dw_b,dw_r]*U[dw_b,dir,dw_r]
             )
         end

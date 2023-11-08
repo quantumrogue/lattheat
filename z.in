@@ -1,0 +1,47 @@
+#
+# Please, use meaningful comments to describe the simulation performed
+#
+
+[Run]
+user = "guilherme"
+host = "laptop"
+run_dir = "simulations/"
+name = "test_run"
+seed = 800 #if commented seed will be time dependent
+
+[Simulation]
+size = [8,8,8,16]
+blocks = [4,4,4,4]
+c0 = 1.0
+beta = 6.0
+bs = [0.1, 0.33]
+cs = [0.12, 0.13, 0.14]
+
+[HMC]
+integrator = "OMF4" # "LEAPFROPG", "OMF2", "OMF4"
+ns = 25 # nr steps of size eps
+eps = 0.1 #integrator step-size HMC
+nthm = 10 # thermalization
+ntraj = 500 #MC length
+
+[Checkpoints]
+dtr = 100000 #save configuration every 'dtr' HMC step
+cnfg_dir = "cnfg/"
+
+[Flow]
+flow = 0 #0: no GF; 1: Full GF; 2: adapt step size integrator
+type = "Wilson" # "Wilson", "Zeuthen", "Both"
+tol = 1.0E-7
+steps = 20
+s = 10
+times = [1.5, 2.0] #starting time(s) for GF measurement if adapt integrator
+iters = [5, 5] #nr of GF iterations for each starting time
+dtr = 1 #MC interval for flow call
+dt = 0.005 #dt
+
+[Smearing]
+corr = 0 # 1=measure correlation functions;, 0=no measurement
+sus = 10
+sdt = 0.01
+sss = [5,5,5]
+srs = 0.001

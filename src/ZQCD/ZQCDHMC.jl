@@ -93,7 +93,7 @@ function HMC!(U,Sigma,Pi, int::IntrScheme, lp::SpaceParm, gp::GaugeParm, zp::ZQC
         if (pacc < 1.0)
             r = rand()
             if (pacc < r) 
-                U     .= ymws.U
+                U     .= ymws.U1
                 Sigma .= zws.Sigma
                 Pi    .= zws.Pi
                 acc = false
