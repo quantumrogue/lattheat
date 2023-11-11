@@ -50,10 +50,10 @@ $$\frac{\text{d}}{\text{d}s}\det(sX + M) = -\text{tr}(XM)$$
 
 ## Run Script
 Directory structure:
-- simulations/
-- lattheat/
 - z.jl
 - z.in
+- simulations/
+- lattheat/
 
 Run:
 ```julia
