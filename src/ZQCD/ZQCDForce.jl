@@ -60,7 +60,7 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
     # Compute force for Π ---------------------------------------------------------
         for dir in 1:N
             up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
-            fPi[b,r] += Complex(8. / gp.beta) ( 2. *Pi[b,r] - adjaction(dag(U[b,dir,r]),Pi[up_b,up_r])   -  adjaction(U[dw_b,dir,dw_r],Pi[dw_b,dw_r]) )
+            fPi[b,r] += 8. / gp.beta *( 2. *Pi[b,r] - adjaction(dag(U[b,dir,r]),Pi[up_b,up_r])   -  adjaction(U[dw_b,dir,dw_r],Pi[dw_b,dw_r]) )
         end
         fPi[b,r] -= 16. * zp.c2 * (4/gp.beta)*(4/gp.beta) * ((zp.b2 + zp.b3*Sigma[b,r]*Sigma[b,r])/4. /zp.c2 + 2. * Pi2/2.) * Pi[b,r]
     # -----------------------------------------------------------------------------
