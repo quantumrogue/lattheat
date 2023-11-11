@@ -17,7 +17,7 @@ include("Groups/Groups.jl")
 using .Groups
 export Group, Algebra
 export SU2, SU2alg, SU2fund, SU3, SU3alg, M3x3, M2x2, U1, U1alg, SU3fund, fundtoMat, pauli, Pauli, fundXpauli,fundipau,tr_ipau
-export dot, expm, exp, dag, unitarize, inverse, tr, projalg, norm, norm2, isgroup, alg2mat, dev_one
+export dot, expm, exp, dag, unitarize, inverse, tr, projalg, norm, norm2, isgroup, alg2mat, dev_one, adjaction
 
 include("Space/Space.jl")
 

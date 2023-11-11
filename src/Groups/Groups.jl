@@ -31,7 +31,7 @@ include("GroupSU2.jl")
 include("M2x2.jl")
 export fundtoMat, Pauli, fundXpauli
 include("AlgebraSU2.jl")
-export SU2alg
+export SU2alg, adjaction
 include("FundamentalSU2.jl")
 export fundipau, tr_ipau
 

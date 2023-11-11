@@ -27,15 +27,32 @@ Base.:*(a::M2x2{T},b::SU2{T}) where T <: AbstractFloat = M2x2{T}(a.u11*b.t1-a.u1
                                                                  a.u21*b.t1-a.u22*conj(b.t2),
                                                                  a.u21*b.t2+a.u22*conj(b.t1))
 
-Base.:/(a::M2x2{T},b::SU2{T}) where T <: AbstractFloat = M2x2{T}(a.u11*conj(b.t1)-a.u12*conj(b.t2),
-                                                                 a.u11*b.t2+a.u12*b.t1,
-                                                                 a.u21*conj(b.t1)-a.u22*conj(b.t2),
-                                                                 -a.u21*b.t2+a.u22*b.t1)
+# Base.:/(a::M2x2{T},b::SU2{T}) where T <: AbstractFloat = M2x2{T}(a.u11*conj(b.t1)-a.u12*conj(b.t2),
+#                                                                  a.u11*b.t2+a.u12*b.t1,
+#                                                                  a.u21*conj(b.t1)-a.u22*conj(b.t2),
+#                                                                  -a.u21*b.t2+a.u22*b.t1)
 
-Base.:\(a::SU2{T},b::M2x2{T}) where T <: AbstractFloat = M2x2{T}(conj(a.t1)*b.u11+a.t2*b.u21,
-                                                                 conj(a.t1)*b.u12+a.t2*b.u22,
-                                                                 -conj(a.t2)*b.u11+a.t1*b.u21,
-                                                                 -conj(a.t2)*b.u12+a.t1*b.u22)
+# my correction ############################################################################
+Base.:/(a::M2x2{T},b::SU2{T}) where T <: AbstractFloat = M2x2{T}(a.u11*conj(b.t1)+a.u12*conj(b.t2),
+                                                                 -a.u11*b.t2+a.u12*b.t1,
+                                                                 a.u21*conj(b.t1)+a.u22*conj(b.t2),
+                                                                 -a.u21*b.t2+a.u22*b.t1)
+############################################################################################
+
+
+# Base.:\(a::SU2{T},b::M2x2{T}) where T <: AbstractFloat = M2x2{T}(conj(a.t1)*b.u11+a.t2*b.u21,
+#                                                                  conj(a.t1)*b.u12+a.t2*b.u22,
+#                                                                  -conj(a.t2)*b.u11+a.t1*b.u21,
+#                                                                  -conj(a.t2)*b.u12+a.t1*b.u22)
+
+# my correction ############################################################################
+Base.:\(a::SU2{T},b::M2x2{T}) where T <: AbstractFloat = M2x2{T}(conj(a.t1)*b.u11-a.t2*b.u21,
+                                                                 conj(a.t1)*b.u12-a.t2*b.u22,
+                                                                 conj(a.t2)*b.u11+a.t1*b.u21,
+                                                                 conj(a.t2)*b.u12+a.t1*b.u22)
+############################################################################################
+
+
 
 Base.:*(a::Number,b::M2x2{T}) where T <: AbstractFloat  = M2x2{T}(a*b.u11, a*b.u12,
                                                                   a*b.u21, a*b.u22)
