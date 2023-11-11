@@ -157,15 +157,13 @@ function adjaction(g::SU2{T}, a::SU2alg{T}) where T <: AbstractFloat
     c32 = 1im*(conj(x)*y - x*conj(y))
     c33 = abs(x)^2 - abs(y)^2
 
-    f1 = a.t1 * c11 + a.t2 * c21 + a.t3 * c31
-    f2 = a.t1 * c12 + a.t2 * c22 + a.t3 * c32
-    f3 = a.t1 * c13 + a.t2 * c23 + a.t3 * c33
+    f1 = real(a.t1 * c11 + a.t2 * c21 + a.t3 * c31)
+    f2 = real(a.t1 * c12 + a.t2 * c22 + a.t3 * c32)
+    f3 = real(a.t1 * c13 + a.t2 * c23 + a.t3 * c33)
 
     return SU2alg{T}(f1,f2,f3)
 
 end
-
-
 
 
 

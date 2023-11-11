@@ -47,3 +47,15 @@ $$\det(sX+M) = \det\Pi\det\biggl(\mathbf 1 +\frac{s}{-\det\Pi}X\Pi\biggr)$$
 and we can use the fact that $\frac{\text{d}}{\text{d}t}\det(\mathbf 1 + tM)=\text{tr}(M)$ to conclude that
 $$\frac{\text{d}}{\text{d}s}\det(sX + M) = -\text{tr}(XM)$$
 
+
+## Run Script
+Directory structure:
+- simulations/
+- lattheat/
+- z.jl
+- z.in
+
+Run:
+```julia
+julia --project="./lattheat" z.jl -i z.in
+```

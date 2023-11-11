@@ -10,8 +10,13 @@ using LatticeGPU
 #+end_src
 
 #+RESULTS:
-: [36m[1m[ [22m[39m[36m[1mInfo: [22m[39mPrecompiling BenchmarkTools [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf]
 : [32m[1m  Activating[22m[39m project at `~/PhD/projects/chachipistachi/lattheat`
+: [33m[1m┌ [22m[39m[33m[1mWarning: [22m[39mCUDA runtime library libcublasLt.so.11 was loaded from a system path. This may cause errors.
+: [33m[1m│ [22m[39mEnsure that you have not set the LD_LIBRARY_PATH environment variable, or that it does not contain paths to CUDA libraries.
+: [33m[1m└ [22m[39m[90m@ CUDA ~/.julia/packages/CUDA/nIZkq/src/initialization.jl:189[39m
+: [33m[1m┌ [22m[39m[33m[1mWarning: [22m[39mCUDA runtime library libnvrtc.so was loaded from a system path. This may cause errors.
+: [33m[1m│ [22m[39mEnsure that you have not set the LD_LIBRARY_PATH environment variable, or that it does not contain paths to CUDA libraries.
+: [33m[1m└ [22m[39m[90m@ CUDA ~/.julia/packages/CUDA/nIZkq/src/initialization.jl:189[39m
 
 SU2 algebra generators
 
@@ -58,16 +63,16 @@ print("\n", g\t3*g )
 #+begin_example
 Matrix g:
 M2x2{Float64}(0.7071067811865475 + 0.0im, 0.7071067811865475 + 0.0im, -0.7071067811865475 + 0.0im, 0.7071067811865475 + 0.0im)
-  0.000004 seconds (1 allocation: 32 bytes)
+  0.040985 seconds (206.84 k allocations: 10.442 MiB, 99.95% compilation time)
   0.000003 seconds (1 allocation: 32 bytes)
-  0.000003 seconds (1 allocation: 32 bytes)
+  0.000002 seconds (1 allocation: 32 bytes)
 
 M2x2{Float64}(0.0 - 0.4999999999999999im, 0.0 + 0.0im, -0.0 + 0.0im, 0.0 + 0.4999999999999999im)
 M2x2{Float64}(0.0 + 0.0im, 0.4999999999999999 + 0.0im, -0.4999999999999999 + 0.0im, 0.0 - 0.0im)
 M2x2{Float64}(0.0 + 0.0im, 0.0 + 0.4999999999999999im, -0.0 + 0.4999999999999999im, 0.0 - 0.0im)
-  0.000003 seconds (2 allocations: 160 bytes)
-  0.000003 seconds (2 allocations: 160 bytes)
-  0.000003 seconds (2 allocations: 160 bytes)
+  0.009494 seconds (22.17 k allocations: 1.030 MiB, 99.24% compilation time)
+  0.000006 seconds (2 allocations: 160 bytes)
+  0.000005 seconds (2 allocations: 160 bytes)
 
 M2x2{Float64}(0.0 - 0.4999999999999999im, 0.0 + 0.0im, 0.0 + 0.0im, 0.0 + 0.4999999999999999im)
 M2x2{Float64}(0.0 + 0.0im, 0.4999999999999999 + 0.0im, -0.4999999999999999 + 0.0im, 0.0 + 0.0im)
