@@ -1,0 +1,75 @@
+#+title: Test_group
+
+
+#+begin_src jupyter-julia
+cd("/home/gtelo/PhD/projects/chachipistachi/lattheat/tests")
+import Pkg
+using Printf, BenchmarkTools
+Pkg.activate("..")
+using LatticeGPU
+#+end_src
+
+#+RESULTS:
+: [36m[1m[ [22m[39m[36m[1mInfo: [22m[39mPrecompiling BenchmarkTools [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf]
+: [32m[1m  Activating[22m[39m project at `~/PhD/projects/chachipistachi/lattheat`
+
+SU2 algebra generators
+
+#+begin_src jupyter-julia
+t1 = SU2alg(1.0, 0.0, 0.0); print(alg2mat(t1))
+t2 = SU2alg(0.0, 1.0, 0.0); print("\n",alg2mat(t2))
+t3 = SU2alg(0.0, 0.0, 1.0); print("\n",alg2mat(t3))
+#+end_src
+
+#+RESULTS:
+: M2x2{Float64}(0.0 + 0.0im, 0.0 + 0.5im, -0.0 + 0.5im, 0.0 - 0.0im)
+: M2x2{Float64}(0.0 + 0.0im, 0.5 + 0.0im, -0.5 + 0.0im, 0.0 - 0.0im)
+: M2x2{Float64}(0.0 + 0.5im, 0.0 + 0.0im, -0.0 + 0.0im, 0.0 - 0.5im)
+
+Test adjoint action for each generator
+
+#+begin_src jupyter-julia
+# group element
+g = SU2(1.0/sqrt(2),1.0/sqrt(2))
+identity = M2x2{Float64}(1.0,0.0,0.0,1.0)
+print("Matrix g:\n")
+print(identity*g)
+
+print("\n")
+# new function
+@time adjaction(g,t1)
+@time adjaction(g,t2)
+@time adjaction(g,t3)
+print("\n",alg2mat(adjaction(g,t1)))
+print("\n",alg2mat(adjaction(g,t2)))
+print("\n",alg2mat(adjaction(g,t3)))
+
+print("\n")
+# explicit computation
+@time g\t1*g
+@time g\t2*g
+@time g\t3*g
+print("\n", g\t1*g )
+print("\n", g\t2*g )
+print("\n", g\t3*g )
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Matrix g:
+M2x2{Float64}(0.7071067811865475 + 0.0im, 0.7071067811865475 + 0.0im, -0.7071067811865475 + 0.0im, 0.7071067811865475 + 0.0im)
+  0.000004 seconds (1 allocation: 32 bytes)
+  0.000003 seconds (1 allocation: 32 bytes)
+  0.000003 seconds (1 allocation: 32 bytes)
+
+M2x2{Float64}(0.0 - 0.4999999999999999im, 0.0 + 0.0im, -0.0 + 0.0im, 0.0 + 0.4999999999999999im)
+M2x2{Float64}(0.0 + 0.0im, 0.4999999999999999 + 0.0im, -0.4999999999999999 + 0.0im, 0.0 - 0.0im)
+M2x2{Float64}(0.0 + 0.0im, 0.0 + 0.4999999999999999im, -0.0 + 0.4999999999999999im, 0.0 - 0.0im)
+  0.000003 seconds (2 allocations: 160 bytes)
+  0.000003 seconds (2 allocations: 160 bytes)
+  0.000003 seconds (2 allocations: 160 bytes)
+
+M2x2{Float64}(0.0 - 0.4999999999999999im, 0.0 + 0.0im, 0.0 + 0.0im, 0.0 + 0.4999999999999999im)
+M2x2{Float64}(0.0 + 0.0im, 0.4999999999999999 + 0.0im, -0.4999999999999999 + 0.0im, 0.0 + 0.0im)
+M2x2{Float64}(0.0 + 0.0im, 0.0 + 0.4999999999999999im, 0.0 + 0.4999999999999999im, 0.0 + 0.0im)
+#+end_example
