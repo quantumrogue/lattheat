@@ -1,6 +1,6 @@
 """
     ZQCD simulation
-    - Full or Adaptive GF
+    - Full or Adaptivze GF
 """
 
 # Measurements
@@ -36,6 +36,11 @@ function parse_commandline()
         help = "input file"
         required = true
         arg_type = String
+
+        "-gpu"
+        help = "GPU on ciclope"
+        required = true
+        arg_type = Int
     end
 
     return parse_args(s)
@@ -63,9 +68,7 @@ function read_options(fname)
                        s["Simulation"]["c0"])
 
     # Scalar Parameters
-    bs = s["Simulation"]["bs"]
-    cs = s["Simulation"]["cs"]
-    zp = ZQCDParm(bs..., cs...)
+    zp = ZQCDParm{T}(s["Simulation"]["r2"],s["Simulation"]["g2"],s["Simulation"]["beta"])
 
 
     hmc_dt = s["HMC"]["eps"]

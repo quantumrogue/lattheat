@@ -3,17 +3,18 @@
 #
 
 [Run]
-user = "guilherme"
-host = "laptop"
+user = "pietro"
+host = "ciclope"
 run_dir = "simulations/"
 name = "test_io_"
 seed = 1200
 
 [Simulation]
-size = [8,8,8,16]
-blocks = [4,4,4,4]
-c0 = 1.0
-beta = 6.0
+dimensions = 3
+size = [8,8,8]
+blocks = [4,4,4]
+c0 = 0.0
+beta = 12.0
 kappa = [0.12985, 0.1317]
 eta = [0.003, 0.004]
 xi = [0.0001, 0.0002, 5.0e-5, 0.0005, 0.0001]

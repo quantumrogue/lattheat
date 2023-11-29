@@ -14,8 +14,9 @@ size = [8,8,8,16]
 blocks = [4,4,4,4]
 c0 = 1.0
 beta = 6.0
-bs = [0.1, 0.33]
-cs = [0.12, 0.13, 0.14]
+r2 = 5.
+g2 = 6.7
+
 
 [HMC]
 integrator = "OMF4" # "LEAPFROPG", "OMF2", "OMF4"

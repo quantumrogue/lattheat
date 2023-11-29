@@ -22,6 +22,9 @@ function zqcd_force(ymws::YMworkspace, zws::ZQCDworkspace, U, Sigma, Pi, zp::ZQC
 end
 
 
+### ============= ACHTUNG =============== ###
+# !!!!!!!!!!! FORCES ARE CALCULATED WITH A - SIGN IN FRONT !!!!!!!!!
+
 function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, zp::ZQCDParm, gp::GaugeParm, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,N,M,B,D}
     # Square mapping to CUDA block
     b = Int64(CUDA.threadIdx().x)
@@ -36,9 +39,8 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
         # ZQCD gauge force
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
-
-            fgauge[b,dir,r] +=  projalg(Complex(8*gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
-            fgauge[b,dir,r] -=  projalg(Complex(8*gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
+            fgauge[b,dir,r] +=  -projalg(Complex(8. *gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
+            fgauge[b,dir,r] -=  -projalg(Complex(8. *gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
         end
     # -----------------------------------------------------------------------------
 
@@ -46,24 +48,26 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
     Pi2 = norm2(Pi[b,r])
 
     # Compute force for Σ -------------------------------------------------------
-        fSigma[b,r] = zero(TS)
-        fSigma[b,r] = 6. .* Sigma[b,r] +
+        fS = zero(TS)
+        fS = 6. .* Sigma[b,r] +
             (4. / gp.beta)*(4. / gp.beta)*( 2. * zp.b1*Sigma[b,r] + 4. * zp.c1*Sigma[b,r]*Sigma[b,r]*Sigma[b,r] + 2. * zp.c3 * Sigma[b,r] * Pi2)
         for dir in 1:N
             up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
-            fSigma[b,r] -= Sigma[up_b,up_r] + Sigma[dw_b,dw_r]
+            fS -= Sigma[up_b,up_r] + Sigma[dw_b,dw_r]
         end
-        fSigma[b,r] *= 4. /gp.beta
+        fS *= 4. /gp.beta
+        fSigma[b,r] = -fS
     # -----------------------------------------------------------------------------
 
 
     # Compute force for Π ---------------------------------------------------------
         for dir in 1:N
             up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
-            fPi[b,r] += 8. / gp.beta *( 2. *Pi[b,r] - adjaction(dag(U[b,dir,r]),Pi[up_b,up_r]) - adjaction(U[dw_b,dir,dw_r],Pi[dw_b,dw_r]) )
+            fPi[b,r] += - 8. / gp.beta *( 2. *Pi[b,r] - adjaction(dag(U[b,dir,r]),Pi[up_b,up_r]) - adjaction(U[dw_b,dir,dw_r],Pi[dw_b,dw_r]) )
         end
-        fPi[b,r] -= (16. * zp.c2 * (4/gp.beta)*(4/gp.beta) * ((zp.b2 + zp.c3 *  Sigma[b,r]*Sigma[b,r] )/(4. *zp.c2) + 2. * Pi2/2.)) * Pi[b,r]
+        fPi[b,r] -= - (16. * zp.c2 * (4/gp.beta)*(4/gp.beta)*(4/gp.beta) * ((zp.b2 + zp.c3 *  Sigma[b,r]*Sigma[b,r] )/(4. *zp.c2) + Pi2/2.)) * Pi[b,r]
     # -----------------------------------------------------------------------------
 
     return nothing
 end
+

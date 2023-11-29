@@ -55,7 +55,7 @@ function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS
         S *= 4. / beta
 
     # Calculate potential
-        S += (4. / beta)^3 * (
+        S += (4. / beta)*(4. / beta)*(4. / beta) * (
             sp.b1 * sigma2 + 
             sp.b2 * pi2 + 
             sp.c1 * sigma2 * sigma2 + 

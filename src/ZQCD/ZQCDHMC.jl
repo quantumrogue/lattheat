@@ -18,21 +18,22 @@ function hamiltonian(mom,U, smom, pmom, Sigma, Pi, lp, zp, gp, ymws)
         PG = CUDA.mapreduce(norm2, +, mom)/2
         PZ = CUDA.mapreduce(abs2, +, smom)/2 + CUDA.mapreduce(norm2, +, pmom)/2
     end
+
+    println("S[U]=$SG, P[U]=$PG,        S[Z]=$SZ,  P[Z]=$PZ")
         
     return SG+SZ+PG+PZ
 end
 
 function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm, gp::GaugeParm, zp::ZQCDParm{T}, ymws::YMworkspace{T}, zws::ZQCDworkspace{T}) where {NI, T <: AbstractFloat}
-
     @timeit "ZQCD MD evolution" begin
         # Evaluate initial forces with (U⁽⁰⁾,Z⁽⁰⁾)
         YM.force_gauge(ymws, U, gp.c0, gp, lp)
         zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
         # Evaluate initial momenta (p⁽⁰⁾,π⁽⁰⁾)
-        mom  .= mom  .- (int.r[1]*int.eps) .* ymws.frc1
-        Smom .= Smom .- (int.r[1]*int.eps) .* zws.frcSigma
-        Pmom .= Pmom .- (int.r[1]*int.eps) .* zws.frcPi
+        mom  .= mom  .+ (int.r[1]*int.eps) .* ymws.frc1
+        Smom .= Smom .+ (int.r[1]*int.eps) .* zws.frcSigma
+        Pmom .= Pmom .+ (int.r[1]*int.eps) .* zws.frcPi
 
         for trajID in 1:int.ns
             k   = 2
@@ -52,13 +53,13 @@ function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm
                 zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
                 if (trajID < int.ns) && (k==1)
-                    mom  .= mom  .- (2. * int.r[k]*int.eps) .* ymws.frc1
-                    Smom .= Smom .- (2. * int.r[k]*int.eps) .* zws.frcSigma
-                    Pmom .= Pmom .- (2. * int.r[k]*int.eps) .* zws.frcPi
+                    mom  .= mom  .+ (2. * int.r[k]*int.eps) .* ymws.frc1
+                    Smom .= Smom .+ (2. * int.r[k]*int.eps) .* zws.frcSigma
+                    Pmom .= Pmom .+ (2. * int.r[k]*int.eps) .* zws.frcPi
                 else
-                    mom  .= mom  .- (int.r[k]*int.eps) .* ymws.frc1
-                    Smom .= Smom .- (int.r[k]*int.eps) .* zws.frcSigma
-                    Pmom .= Pmom .- (int.r[k]*int.eps) .* zws.frcPi
+                    mom  .= mom  .+ (int.r[k]*int.eps) .* ymws.frc1
+                    Smom .= Smom .+ (int.r[k]*int.eps) .* zws.frcSigma
+                    Pmom .= Pmom .+ (int.r[k]*int.eps) .* zws.frcPi
                 end
                 k += off
             end

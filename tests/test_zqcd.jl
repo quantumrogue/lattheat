@@ -11,6 +11,8 @@ Pkg.activate("LatticeGPU")
 using LatticeGPU
 
 
+# whichGPU = ARGS[1]
+# device!(1)
 
 # Set lattice/block size
 lp = SpaceParm{3}((8,8,8), (4,4,4))
@@ -45,19 +47,99 @@ U = vector_field(GRP{PREC}, lp)
 fill!(U, one(GRP{PREC}))
 
 println("Allocating Z")
-Σ = scalar_field(PREC,lp)
-Π = scalar_field(ALG{PREC},lp)
+Sigma = scalar_field(PREC,lp)
+fill!(Sigma,one(PREC))
+
+Pi = scalar_field(ALG{PREC},lp)
+fill!(Pi,zero(ALG{PREC}))
 
 
-# println("Try to compute the action")
-# @time S = zqcd_action(U,Σ,Π,lp,zp,gp,ymws)
-# println(S)
 
-# println("Try to compute the forces")
-# @time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
-# @time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
+function provaMD!(mom,U, Smom,Sigma, Pmom,Pi, lp::SpaceParm, gp::GaugeParm, zp::ZQCDParm{T}, ymws::YMworkspace{T}, zws::ZQCDworkspace{T}) where {NI, T <: AbstractFloat}
+    for i in 1:20
+        LatticeGPU.YM.force_gauge(ymws, U, gp.c0, gp, lp)
+        zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
-int = omf4(PREC,0.05,20)
+        println("...$(i).1: momentum upd")
+        mom  .= mom  .+ 0.05 / 2 .* ymws.frc1
+        Smom .= Smom .+ 0.05 / 2 .* zws.frcSigma
+        Pmom .= Pmom .+ 0.05 / 2 .* zws.frcPi
+
+        h = hamiltonian(mom, U, Smom, Pmom, Sigma, Pi, lp, zp, gp, ymws)
+
+        println("...$(i).2: update conf")
+        U     .= expm.(U, mom, 0.05)
+        Sigma .= Sigma .+ 0.05 .* Smom
+        Pi    .= Pi    .+ 0.05 .* Pmom
+
+        h = hamiltonian(mom, U, Smom, Pmom, Sigma, Pi, lp, zp, gp, ymws)
+        
+        LatticeGPU.YM.force_gauge(ymws, U, gp.c0, gp, lp)
+        zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
+
+        
+        println("...$i.3: mom upd")
+        mom  .= mom  .+ 0.05 / 2 .* ymws.frc1
+        Smom .= Smom .+ 0.05 / 2 .* zws.frcSigma
+        Pmom .= Pmom .+ 0.05 / 2 .* zws.frcPi
+        
+        h = hamiltonian(mom, U, Smom, Pmom, Sigma, Pi, lp, zp, gp, ymws)
+        println("$i:    $h")
+    end
+
+    return nothing
+end
+
+function provaHMC!(U,Sigma,Pi, lp::SpaceParm, gp::GaugeParm, zp::ZQCDParm, ymws::YMworkspace, zws::ZQCDworkspace; noacc=false)
+    @timeit "HMC trajectory" begin
+        ymws.U1   .= U
+        zws.Sigma .= Sigma
+        zws.Pi    .= Pi
+
+        randomize!(ymws.mom,lp,ymws)
+        randomize!(zws.momSigma,zws.momPi,lp,ymws)
+
+        println("...1")
+        Hin = hamiltonian(ymws.mom, U, zws.momSigma, zws.momPi, Sigma, Pi, lp, zp, gp, ymws)
+
+        provaMD!(ymws.mom,U,zws.momSigma,Sigma,zws.momPi,Pi,lp,gp,zp,ymws,zws)
+
+        ΔH = hamiltonian(ymws.mom, U, zws.momSigma, zws.momPi, Sigma, Pi, lp, zp, gp, ymws) - Hin
+        pacc = exp(-ΔH)
+
+        acc = true
+        if (noacc)
+            return ΔH, acc
+        end
+        
+        if (pacc < 1.0)
+            r = rand()
+            if (pacc < r) 
+                U     .= ymws.U1
+                Sigma .= zws.Sigma
+                Pi    .= zws.Pi
+                acc = false
+            end
+        end
+    end
+    return ΔH, acc
+end
+
+
+
+
+## ==============================================================
+## ========================== TESTS =============================
+## ==============================================================
+    for i in 1:5
+        println("+++++++++++++ $i ++++++++++++++")
+        dh,acc = provaHMC!(U,Sigma,Pi,lp,gp,zp,ymws,zws)
+    end
+
+## ==============================================================
+## ==============================================================
+## ==============================================================
+
 
 
 
@@ -80,28 +162,3 @@ function krnl_gaugeheater!(f, m, lp::SpaceParm{N,M,BC_PERIODIC,D}) where {N,M,D}
 end
 
 
-
-
-
-
-
-
-
-## ==============================================================
-## ========================== TESTS =============================
-## ==============================================================
-
-    # LatticeGPU.YM.randomize!(ymws.mom,lp,ymws)
-    # # gaugeheater!(U,lp,ymws)
-    # randomize!(zws.momSigma,zws.momPi,lp,ymws)
-    # # randomize!(Σ,Π,lp,ymws)
-    # zqcd_action(U,Σ,Π,lp,zp,gp,ymws) 
-    # zqcd_MD!(ymws.mom, U, zws.momSigma, Σ, zws.momPi, Π, int, lp, gp, zp, ymws, zws)
-    # zqcd_action(U,Σ,Π,lp,zp,gp,ymws) 
-
-    HMC!(U,Σ,Π,int,lp,gp,zp,ymws,zws)
-
-
-## ==============================================================
-## ==============================================================
-## ==============================================================

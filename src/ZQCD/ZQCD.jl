@@ -87,6 +87,9 @@ module ZQCD
     include("ZQCDHMC.jl")
         export hamiltonian, MD!, HMC!
 
+    # include("ZQCDObservables.jl")
+    #     export 
+
 
 
 end
