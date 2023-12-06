@@ -28,10 +28,10 @@ $$\frac{\partial S_Z}{\partial U_i(x)} = \frac{8}{\beta}\text{tr}\biggl[i\sigma_
 ### Forces new
 ciao
 
-$$\frac{\partial S_Z}{\partial \Pi_a(x)} = 2 \Big(\frac{4}{\beta}\Big)\text{tr} \biggl[i\sigma_a\Bigl(2\Pi_x - U_i(x)\Pi_{x+\hat i}U_i^\dagger(x)-U_i^\dagger(x-\hat i)\Pi_{x-\hat i}U_i(x-\hat i) \Bigr)\biggr]$$
+$$\frac{\partial S_Z}{\partial \Pi_a(x)} = 2 \Big(\frac{4}{\beta}\Big)\text{tr} \biggl[i\sigma_a\Bigl(2\Pi_x \textcolor{red}{-} U_i(x)\Pi_{x+\hat i}U_i^\dagger(x)-U_i^\dagger(x-\hat i)\Pi_{x-\hat i}U_i(x-\hat i) \Bigr)\biggr]$$
 
 
-$$\frac{\partial S_Z}{\partial U_i(x)} = -\frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x - \Pi_x U_i(x)\Pi_{x+\hat i}U^\dagger_i(x)\Bigr)\biggr]$$
+$$\frac{\partial S_Z}{\partial U_i(x)} = -\frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x - \textcolor{red}{\Pi_x U_i(x)\Pi_{x+\hat i}U^\dagger_i(x)}\Bigr)\biggr]$$
 
 
 
