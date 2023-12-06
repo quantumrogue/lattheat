@@ -28,6 +28,10 @@ end
 
 
 function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, zp::ZQCDParm, gp::GaugeParm, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,N,M,B,D}
+
+    signU = -1.
+    signZ = -1.
+
     # Square mapping to CUDA block
     b = Int64(CUDA.threadIdx().x)
     r = Int64(CUDA.blockIdx().x)
@@ -42,12 +46,9 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
 
-            # adjUPi = adjaction(dag(U[b,dir,r]),Pi[up_b,up_r])
-            # fgauge[b,dir,r] += (-) * projalg(Complex(8. *gp.beta), adjUPi*Pi[b,r])
-            # fgauge[b,dir,r] -= (-) * projalg(Complex(8. *gp.beta), Pi[b,r]*adjUPi)
-
-            fgauge[b,dir,r] +=  - projalg(Complex(8. *gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
-            fgauge[b,dir,r] -=  - projalg(Complex(8. *gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
+            fgauge[b,dir,r] += signU * projalg(Complex(8. *gp.beta), Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] )
+            # fgauge[b,dir,r] -=  - projalg(Complex(8. *gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
+            fgauge[b,dir,r] -= signU * projalg(Complex(8. *gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
         end
     # # -----------------------------------------------------------------------------
 
@@ -63,16 +64,18 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
             fS -= Sigma[up_b,up_r] + Sigma[dw_b,dw_r]
         end
         fS *= 4. /gp.beta
-        fSigma[b,r] = -fS
+        fSigma[b,r] = signZ * fS
     # -----------------------------------------------------------------------------
 
 
     # Compute force for Π ---------------------------------------------------------
+        fPi[b,r] = zero(TP)
         for dir in 1:N
             up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
-            fPi[b,r] += - 8. / gp.beta *( 2. *Pi[b,r] - adjaction(dag(U[b,dir,r]),Pi[up_b,up_r]) - adjaction(U[dw_b,dir,dw_r],Pi[dw_b,dw_r]) )
+            fPi[b,r] += signZ * 8. / gp.beta *( 2. *Pi[b,r] - adjaction(dag(U[b,dir,r]),Pi[up_b,up_r]) - adjaction(U[dw_b,dir,dw_r],Pi[dw_b,dw_r]) )
         end
-        fPi[b,r] -= - (16. * zp.c2 * (4/gp.beta)*(4/gp.beta)*(4/gp.beta) * ((zp.b2 + zp.c3 *  Sigma[b,r]*Sigma[b,r] )/(4. *zp.c2) + Pi2/2.)) * Pi[b,r]
+        # fPi[b,r] -= - (16. * zp.c2 * (4/gp.beta)*(4/gp.beta)*(4/gp.beta) * ((zp.b2 + zp.c3 *  Sigma[b,r]*Sigma[b,r] )/(4. *zp.c2) + Pi2/2.)) * Pi[b,r]
+        fPi[b,r] -= signZ * 2. * (4/gp.beta)*(4/gp.beta)*(4/gp.beta) * (8. * zp.c2 * Pi2/2 - 2. *(zp.b2 + zp.c3 *  Sigma[b,r]*Sigma[b,r])) * Pi[b,r]
     # -----------------------------------------------------------------------------
 
     return nothing
