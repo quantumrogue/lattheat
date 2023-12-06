@@ -14,7 +14,7 @@ $$V = \biggl(\frac{4}{\beta}\biggr)^3\sum_n[\hat b_1\Sigma^2 + \hat b_2\Pi_a^2 +
 
 ## HMC
 For the HMC we need to compute forces.
-### Forces
+### Forces (old)
 We collect here the forces used in the HMC. For $\Sigma$:
 $$\frac{\partial}{\partial \Sigma_x} (S_Z+V)= \biggl(\frac{4}{\beta}\biggr)\bigg[6\Sigma_x - \sum_{\hat i}(\Sigma_{x+\hat i}+\Sigma_{x-\hat i}) +  \biggl(\frac{4}{\beta}\biggr)^2(2b_1\Sigma_x + 4c_1 \Sigma_x^3 + 2 c_3 \Sigma_x \Pi_a^2) \bigg]$$
 for $\Pi$:
@@ -25,7 +25,7 @@ $$\frac{\partial S_Z}{\partial U_i(x)} = \frac{8}{\beta}\text{tr}\biggl[i\sigma_
 
 
 
-New one
+### Forces new
 $$\frac{\partial S_Z}{\partial U_i(x)} = -\frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x - \Pi_x U_i(x)\Pi_{x+\hat i}U^\dagger_i(x)\Bigr)\biggr]$$
 
 
@@ -46,11 +46,13 @@ $$\text{tr}\Pi^2 = -\frac{\Pi_a^2}{2} = -2\det \Pi$$
 
 #### Group and algebra derivatives
 The derivative of a function of a group element with respect to the element of the group can be calculated operatively by
-$$\frac{\text{d}f[U]}{\text{d}U} = -\frac{1}{i} \frac{\text{d}}{\text{d}s} f\big[e^{-isX}U_i(x)\big] \biggl|_{s=0}$$
+$$\frac{\text{d}f[U]}{\text{d}U} = -\frac{1}{i} \frac{\text{d}}{\text{d}s} f\biggl[e^{-isX}U_i(x)\biggr] |_{s=0}$$
+
+
 with 
 $$e^{-isX}U_\mu(x) = e^{-is\delta(x-y)\delta_{ij}\sigma_a}U_i(x)$$
 while for an element of the algebra 
-$$\frac{\text{d}f[\Pi]}{\text{d}\Pi} = \frac{\text{d}}{\text{d}s} f\bigl[sX+M\bigr]$$
+$$\frac{\text{d}f[\Pi]}{\text{d}\Pi} = \frac{\text{d}}{\text{d}s} f\biggl[sX+M\biggr]$$
 with $X=i\delta(x-y)\sigma_a$.
 
 ##### Derivative of the determinant of an algebra matrix
