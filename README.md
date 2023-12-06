@@ -22,6 +22,18 @@ $$\frac{\partial S_Z}{\partial \Pi_a(x)} = 2 \Big(\frac{4}{\beta}\Big)\text{tr} 
 $$\frac{\partial V}{\partial \Pi_a(x)} = -16c_2 \Big(\frac{4}{\beta}\Big)^3\biggl(\frac{b_2+c_3\Sigma_x^2}{4c_2}+2\det\Pi_x\biggr)\text{tr}(i\sigma_a \Pi_x)$$
 and for gauge fields
 $$\frac{\partial S_Z}{\partial U_i(x)} = \frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x - U_i^\dagger(x)\Pi_x U_i(x)\Pi_{x+\hat i}\Bigr)\biggr]$$
+
+
+
+New one
+$$\frac{\partial S_Z}{\partial U_i(x)} = -\frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x - \Pi_x U_i(x)\Pi_{x+\hat i}U^\dagger_i(x)\Bigr)\biggr]$$
+
+
+
+
+
+
+
 ### Some useful formulas
 #### General $SU(2)$ things
 An algebra matrix, as $\Pi$ satisfy

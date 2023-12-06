@@ -22,8 +22,10 @@ function zqcd_force(ymws::YMworkspace, zws::ZQCDworkspace, U, Sigma, Pi, zp::ZQC
 end
 
 
-### ============= ACHTUNG =============== ###
+### ========================== ACHTUNG ============================ ###
 # !!!!!!!!!!! FORCES ARE CALCULATED WITH A - SIGN IN FRONT !!!!!!!!!
+### =============================================================== ###
+
 
 function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, zp::ZQCDParm, gp::GaugeParm, lp::SpaceParm{N,M,B,D}) where {TG,TS,TP,N,M,B,D}
     # Square mapping to CUDA block
@@ -39,10 +41,15 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
         # ZQCD gauge force
         for dir in 1:N
             b_up, r_up = up((b, r), dir, lp)
-            fgauge[b,dir,r] +=  -projalg(Complex(8. *gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
-            fgauge[b,dir,r] -=  -projalg(Complex(8. *gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
+
+            # adjUPi = adjaction(dag(U[b,dir,r]),Pi[up_b,up_r])
+            # fgauge[b,dir,r] += (-) * projalg(Complex(8. *gp.beta), adjUPi*Pi[b,r])
+            # fgauge[b,dir,r] -= (-) * projalg(Complex(8. *gp.beta), Pi[b,r]*adjUPi)
+
+            fgauge[b,dir,r] +=  - projalg(Complex(8. *gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
+            fgauge[b,dir,r] -=  - projalg(Complex(8. *gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
         end
-    # -----------------------------------------------------------------------------
+    # # -----------------------------------------------------------------------------
 
 
     Pi2 = norm2(Pi[b,r])

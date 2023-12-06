@@ -61,9 +61,9 @@ function provaMD!(mom,U, Smom,Sigma, Pmom,Pi, lp::SpaceParm, gp::GaugeParm, zp::
         zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
         println("...$(i).1: momentum upd")
-        mom  .= mom  .+ 0.05 / 2 .* ymws.frc1
-        Smom .= Smom .+ 0.05 / 2 .* zws.frcSigma
-        Pmom .= Pmom .+ 0.05 / 2 .* zws.frcPi
+        mom  .= mom  .+ 0.05/2 .* ymws.frc1
+        Smom .= Smom .+ 0.05/2 .* zws.frcSigma
+        Pmom .= Pmom .+ 0.05/2 .* zws.frcPi
 
         h = hamiltonian(mom, U, Smom, Pmom, Sigma, Pi, lp, zp, gp, ymws)
 
@@ -79,9 +79,9 @@ function provaMD!(mom,U, Smom,Sigma, Pmom,Pi, lp::SpaceParm, gp::GaugeParm, zp::
 
         
         println("...$i.3: mom upd")
-        mom  .= mom  .+ 0.05 / 2 .* ymws.frc1
-        Smom .= Smom .+ 0.05 / 2 .* zws.frcSigma
-        Pmom .= Pmom .+ 0.05 / 2 .* zws.frcPi
+        mom  .= mom  .+ 0.05/2 .* ymws.frc1
+        Smom .= Smom .+ 0.05/2 .* zws.frcSigma
+        Pmom .= Pmom .+ 0.05/2 .* zws.frcPi
         
         h = hamiltonian(mom, U, Smom, Pmom, Sigma, Pi, lp, zp, gp, ymws)
         println("$i:    $h")
