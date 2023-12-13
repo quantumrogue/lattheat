@@ -26,12 +26,10 @@ $$\frac{\partial S_Z}{\partial U_i(x)} = \frac{8}{\beta}\text{tr}\biggl[i\sigma_
 
 
 ### Forces new
-ciao
-
-$$\frac{\partial S_Z}{\partial \Pi_a(x)} = 2 \Big(\frac{4}{\beta}\Big)\sum_i\text{tr} \biggl[i\sigma_a\Bigl(2\Pi_x \textcolor{red}{-} U_i(x)\Pi_{x+\hat i}U_i^\dagger(x)-U_i^\dagger(x-\hat i)\Pi_{x-\hat i}U_i(x-\hat i) \Bigr)\biggr]$$
+$$\frac{\partial S_Z}{\partial \Pi_a(x)} = 2 \Big(\frac{4}{\beta}\Big)\sum_i\text{tr} \biggl[i\sigma_a\Bigl(2\Pi_x - U_i(x)\Pi_{x+\hat i}U_i^\dagger(x) \textcolor{red}{-} U_i^\dagger(x-\hat i)\Pi_{x-\hat i}U_i(x-\hat i) \Bigr)\biggr]$$
 
 
-$$\frac{\partial S_Z}{\partial U_i(x)} = \textcolor{red}{-}\frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x - \textcolor{red}{\Pi_x U_i(x)\Pi_{x+\hat i}U^\dagger_i(x)}\Bigr)\biggr]$$
+$$\frac{\partial S_Z}{\partial U_i(x)} = \frac{8}{\beta}\text{tr}\biggl[i\sigma_a\Bigl(\textcolor{red}{\Pi_x U_i(x)\Pi_{x+\hat i}U^\dagger_i(x)} - U_i(x)\Pi_{x+\hat{i}}U_i^\dagger(x)\Pi_x\Bigr)\biggr]$$
 
 $$\frac{\partial V}{\partial \Pi_a(x)} = -2 \Big(\frac{4}{\beta}\Big)^3 \bigl( 2(b_2 + c_3\Sigma_x^2) + 8c_2\det\Pi_x \bigr) \text{tr}(i\sigma_a\Pi_n)$$
 
