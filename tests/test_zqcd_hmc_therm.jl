@@ -30,21 +30,19 @@ PREC = Float64
 println("Precision:         ", PREC)
 
 # Set gauge parameters
-gp = GaugeParm{PREC}(GRP{PREC}, 12, 0.)
+gp = GaugeParm{PREC}(GRP{PREC}, 6., 1.)
 println("Gauge  Parameters: \n", gp)
 
 # Set ZQCD parameters
-zp = ZQCDParm{PREC}(5.,6.7,12.)
+zp = ZQCDParm{PREC}(5.,6.7,gp.beta)
 println("ZQCD  Parameters: \n", zp)
 
-
-println("Allocating ZQCD workspace")
+# println("Allocating ZQCD workspace")
 ymws = YMworkspace(GRP, PREC, lp)
 zws  = ZQCDworkspace(PREC, lp)
 
 println("Allocating U")
 U = vector_field(GRP{PREC}, lp)
-fill!(U, one(GRP{PREC}))
 
 println("Allocating Z")
 Sigma = scalar_field(PREC,lp)
@@ -64,8 +62,8 @@ fill!(Pi,zero(ALG{PREC}))
         println("######################################################")
         println("# ΔH( $i): ", dh)
         println("# Plaquette( $i): ", plaquette(U,lp, gp, ymws))
-        println("# trZ( $i): ", CUDA.sum(Sigma))
-        println("# |trZ( $i)|: ", CUDA.mapreduce(abs,+,Sigma))
+        # println("# trZ( $i): ", CUDA.sum(Sigma))
+        # println("# |trZ( $i)|: ", CUDA.mapreduce(abs,+,Sigma))
     end
 
 ## ==============================================================
@@ -75,22 +73,22 @@ fill!(Pi,zero(ALG{PREC}))
 
 
 
-function gaugeheater!(f, lp::SpaceParm, ymws::YMworkspace)
-    @timeit "Randomize SU(2) gauge field" begin
-        m = CUDA.randn(ymws.PRC, lp.bsz,lp.ndim,4,lp.rsz)
-        CUDA.@sync begin
-            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_gaugeheater!(f,m,lp)
-        end
-        f .= unitarize.(f)
-    end
-    return nothing
-end
-function krnl_gaugeheater!(f, m, lp::SpaceParm{N,M,BC_PERIODIC,D}) where {N,M,D}
-    b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
-    for id in 1:lp.ndim
-        f[b,id,r] = SU2(complex(m[b,id,1,r], m[b,id,2,r]), complex(m[b,id,3,r],m[b,id,4,r]))
-    end
-    return nothing
-end
+# function gaugeheater!(f, lp::SpaceParm, ymws::YMworkspace)
+#     @timeit "Randomize SU(2) gauge field" begin
+#         m = CUDA.randn(ymws.PRC, lp.bsz,lp.ndim,4,lp.rsz)
+#         CUDA.@sync begin
+#             CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_gaugeheater!(f,m,lp)
+#         end
+#         f .= unitarize.(f)
+#     end
+#     return nothing
+# end
+# function krnl_gaugeheater!(f, m, lp::SpaceParm{N,M,BC_PERIODIC,D}) where {N,M,D}
+#     b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
+#     for id in 1:lp.ndim
+#         f[b,id,r] = SU2(complex(m[b,id,1,r], m[b,id,2,r]), complex(m[b,id,3,r],m[b,id,4,r]))
+#     end
+#     return nothing
+# end
 
 

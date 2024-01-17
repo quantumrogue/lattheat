@@ -36,7 +36,7 @@ function HMC!(U, Phi,  int::IntrScheme, lp::SpaceParm, gp::GaugeParm, sp::Scalar
         
         dh   = hamiltonian(ymws.mom, U, sws.mom, Phi, lp, gp, sp, ymws) - hini
         pacc = exp(-dh)
-        
+
         acc = true
         if (noacc)
             return dh, acc
