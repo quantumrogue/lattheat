@@ -30,9 +30,9 @@ function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm
         zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
         # Evaluate initial momenta (p⁽⁰⁾,π⁽⁰⁾)
-        mom  .= mom  .- (int.r[1]*int.eps) .* ymws.frc1
-        Smom .= Smom .- (int.r[1]*int.eps) .* zws.frcSigma
-        Pmom .= Pmom .- (int.r[1]*int.eps) .* zws.frcPi
+        mom  .= mom  .+ (int.r[1]*int.eps) .* ymws.frc1
+        Smom .= Smom .+ (int.r[1]*int.eps) .* zws.frcSigma
+        Pmom .= Pmom .+ (int.r[1]*int.eps) .* zws.frcPi
 
         for trajID in 1:int.ns
             k   = 2
@@ -52,13 +52,13 @@ function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm
                 zqcd_force(ymws,zws,U,Sigma,Pi,zp,gp,lp)
 
                 if (trajID < int.ns) && (k==1)
-                    mom  .= mom  .- (2. * int.r[k]*int.eps) .* ymws.frc1
-                    Smom .= Smom .- (2. * int.r[k]*int.eps) .* zws.frcSigma
-                    Pmom .= Pmom .- (2. * int.r[k]*int.eps) .* zws.frcPi
+                    mom  .= mom  .+ (2. * int.r[k]*int.eps) .* ymws.frc1
+                    Smom .= Smom .+ (2. * int.r[k]*int.eps) .* zws.frcSigma
+                    Pmom .= Pmom .+ (2. * int.r[k]*int.eps) .* zws.frcPi
                 else
-                    mom  .= mom  .- (int.r[k]*int.eps) .* ymws.frc1
-                    Smom .= Smom .- (int.r[k]*int.eps) .* zws.frcSigma
-                    Pmom .= Pmom .- (int.r[k]*int.eps) .* zws.frcPi
+                    mom  .= mom  .+ (int.r[k]*int.eps) .* ymws.frc1
+                    Smom .= Smom .+ (int.r[k]*int.eps) .* zws.frcSigma
+                    Pmom .= Pmom .+ (int.r[k]*int.eps) .* zws.frcPi
                 end
                 k += off
             end
