@@ -28,7 +28,7 @@ PREC = Float64
 println("Precision:         ", PREC)
 
 # Set gauge parameters
-gp = GaugeParm{PREC}(GRP{PREC}, 12, 0.)
+gp = GaugeParm{PREC}(GRP{PREC}, 12., 1.)
 println("Gauge  Parameters: \n", gp)
 
 # Set ZQCD parameters
@@ -48,16 +48,24 @@ println("Allocating Z")
 Σ = scalar_field(PREC,lp)
 Π = scalar_field(ALG{PREC},lp)
 
+## ==============================================================
+## ========================== TESTS =============================
+## ==============================================================
 
-# println("Try to compute the action")
-# @time S = zqcd_action(U,Σ,Π,lp,zp,gp,ymws)
-# println(S)
+    # LatticeGPU.YM.randomize!(ymws.mom,lp,ymws)
+    # # gaugeheater!(U,lp,ymws)
+    # randomize!(zws.momSigma,zws.momPi,lp,ymws)
+    # # randomize!(Σ,Π,lp,ymws)
+    # zqcd_action(U,Σ,Π,lp,zp,gp,ymws) 
+    # zqcd_MD!(ymws.mom, U, zws.momSigma, Σ, zws.momPi, Π, int, lp, gp, zp, ymws, zws)
+    # zqcd_action(U,Σ,Π,lp,zp,gp,ymws) 
 
-# println("Try to compute the forces")
-# @time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
-# @time zqcd_force(ymws,zws,U,Σ,Π,zp,gp,lp)
+    HMC!(U,Σ,Π,int,lp,gp,zp,ymws,zws)
 
-int = omf4(PREC,0.05,20)
+
+## ==============================================================
+## ==============================================================
+## ==============================================================
 
 
 
@@ -87,21 +95,3 @@ end
 
 
 
-## ==============================================================
-## ========================== TESTS =============================
-## ==============================================================
-
-    # LatticeGPU.YM.randomize!(ymws.mom,lp,ymws)
-    # # gaugeheater!(U,lp,ymws)
-    # randomize!(zws.momSigma,zws.momPi,lp,ymws)
-    # # randomize!(Σ,Π,lp,ymws)
-    # zqcd_action(U,Σ,Π,lp,zp,gp,ymws) 
-    # zqcd_MD!(ymws.mom, U, zws.momSigma, Σ, zws.momPi, Π, int, lp, gp, zp, ymws, zws)
-    # zqcd_action(U,Σ,Π,lp,zp,gp,ymws) 
-
-    HMC!(U,Σ,Π,int,lp,gp,zp,ymws,zws)
-
-
-## ==============================================================
-## ==============================================================
-## ==============================================================
