@@ -36,6 +36,9 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
     b = Int64(CUDA.threadIdx().x)
     r = Int64(CUDA.blockIdx().x)
     
+    signU = -1.
+    signZ = -1.
+
     # Compute gauge force ----------------------------------------------------------
         for id in 1:N
             fgauge[b,id,r] = (gp.beta/gp.ng)*fgauge[b,id,r]
@@ -48,7 +51,13 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
 
             fgauge[b,dir,r] += signU * projalg(Complex(8. /gp.beta), Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] )
             fgauge[b,dir,r] -= signU * projalg(Complex(8. /gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
+<<<<<<< HEAD
             # fgauge[b,dir,r] -=  - projalg(Complex(8. *gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
+=======
+
+            # fgauge[b,dir,r] +=  projalg(Complex(8*gp.beta), U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] * Pi[b,r])
+            # fgauge[b,dir,r] -=  projalg(Complex(8*gp.beta), U[b,dir,r] \ Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up])
+>>>>>>> main
         end
     # # -----------------------------------------------------------------------------
 
@@ -74,7 +83,11 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
             up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
             fPi[b,r] += signZ * 8. / gp.beta *( 2. *Pi[b,r] - adjaction(dag(U[b,dir,r]),Pi[up_b,up_r]) - adjaction(U[dw_b,dir,dw_r],Pi[dw_b,dw_r]) )
         end
+<<<<<<< HEAD
         # fPi[b,r] -= - (16. * zp.c2 * (4/gp.beta)*(4/gp.beta)*(4/gp.beta) * ((zp.b2 + zp.c3 *  Sigma[b,r]*Sigma[b,r] )/(4. *zp.c2) + Pi2/2.)) * Pi[b,r]
+=======
+        # fPi[b,r] -= (16. * zp.c2 * (4/gp.beta)*(4/gp.beta) * ((zp.b2 + zp.c3 *  Sigma[b,r]*Sigma[b,r] )/(4. *zp.c2) + 2. * Pi2/2.)) * Pi[b,r]
+>>>>>>> main
         fPi[b,r] -= signZ * 2. * (4/gp.beta)*(4/gp.beta)*(4/gp.beta) * (8. * zp.c2 * Pi2/2 - 2. *(zp.b2 + zp.c3 *  Sigma[b,r]*Sigma[b,r])) * Pi[b,r]
     # -----------------------------------------------------------------------------
 

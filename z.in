@@ -3,8 +3,8 @@
 #
 
 [Run]
-user = "guilherme"
-host = "laptop"
+user = "main"
+host = "ciclope"
 run_dir = "simulations/"
 name = "test_run"
 seed = 800 #if commented seed will be time dependent
