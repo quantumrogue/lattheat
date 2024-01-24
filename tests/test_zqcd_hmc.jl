@@ -30,7 +30,7 @@ PREC = Float64
 println("Precision:         ", PREC)
 
 # Set gauge parameters
-gp = GaugeParm{PREC}(GRP{PREC}, 12, 0.)
+gp = GaugeParm{PREC}(GRP{PREC}, 12, 1.)
 println("Gauge  Parameters: \n", gp)
 
 # Set ZQCD parameters
