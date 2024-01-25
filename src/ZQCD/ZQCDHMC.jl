@@ -18,13 +18,13 @@ function hamiltonian(mom,U, smom, pmom, Sigma, Pi, lp, zp, gp, ymws)
 
         SZ = zqcd_action(U, Sigma, Pi, lp, zp, gp, ymws)
         PZ = CUDA.mapreduce(abs2, +, smom)/2 
-        # PZ += CUDA.mapreduce(norm2, +, pmom)/2
+        PZ += CUDA.mapreduce(norm2, +, pmom)/2
     end
 
-    println("S[U]=$SG, P[U]=$PG,        S[Z]=$SZ,  P[Z]=$PZ")
+    println("(S[U]=$SG + P[U]=$PG) =  $(SG+PG),       ---------------     (S[Z]=$SZ,  P[Z]=$PZ) = $(SZ+PZ)")
         
-    # return SG+SZ+PG+PZ
-    return SG+PG
+    return SG+SZ+PG+PZ
+    # return SG+PG
 end
 
 function MD!(mom,U, Smom,Sigma, Pmom,Pi,   int::IntrScheme{NI, T}, lp::SpaceParm, gp::GaugeParm, zp::ZQCDParm{T}, ymws::YMworkspace{T}, zws::ZQCDworkspace{T}) where {NI, T <: AbstractFloat}

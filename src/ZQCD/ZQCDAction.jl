@@ -23,13 +23,13 @@ function zqcd_action(U, Sigma, Pi, lp::SpaceParm, sp::ZQCDParm, gp::GaugeParm, y
 end
 
 
-function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS}, Pi::AbstractArray{TP}, sp::ZQCDParm{T}, lp::SpaceParm{N,M,B,D}) where {T,TG,TS,TP,N,M,B,D}
+function krnl_zqcd_act!(act, beta, U, Sigma, Pi, sp::ZQCDParm{T}, lp::SpaceParm{N,M,B,D}) where {T<:AbstractFloat,N,M,B,D}
 
     # Square mapping to CUDA block
     b = Int64(CUDA.threadIdx().x)
     r = Int64(CUDA.blockIdx().x)
 
-    S = zero(eltype(act))
+    S = zero(T)
 
     # Calculate kinetic action for Σ
         for dir in 1:N
@@ -41,20 +41,16 @@ function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS
         S += 3. * sigma2
 
     # Calculate kinetic action for Π
-    for dir in 1:N
-        b_up, r_up = up((b, r), dir, lp)
-        S -= 2. * convert(eltype(act),
-            tr(
-                alg2mat(Pi[b,r]) * Pi[b,r] -  
-                Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] 
-            )
-        )
-    end
-    S *= 4. / beta
+        pi2 = norm2(Pi[b,r])
+        for dir in 1:N
+            b_up, r_up = up((b, r), dir, lp)
+            S -= pi2
+            S -= convert(T, 2. * real(tr(Pi[b,r]*U[b,dir,r]*Pi[b_up,r_up]/U[b,dir,r])) )
+        end
+        S *= convert(T,4. / beta)
     
     # Calculate potential
-        pi2 = norm2(Pi[b,r])
-        S += (4. / beta)*(4. / beta)*(4. / beta) * (
+        S += convert(T,(4. / beta)*(4. / beta)*(4. / beta)) * (
             sp.b1 * sigma2 + 
             sp.b2 * pi2 + 
             sp.c1 * sigma2 * sigma2 + 

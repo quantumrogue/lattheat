@@ -65,7 +65,7 @@ ymws = YMworkspace(GRP, PREC, lp)
 
 
 # Set ZQCD parameters
-zp = ZQCDParm{PREC}(5.,6.7,gp.beta)
+zp = ZQCDParm{PREC}(5.,3.,gp.beta)
 println("ZQCD  Parameters: \n", zp)
 
 println("Allocating ZQCD workspace")
@@ -74,9 +74,9 @@ zws  = ZQCDworkspace(PREC, lp)
 println("Allocating Z")
 Sigma = scalar_field(PREC,lp)
 Pi = scalar_field(ALG{PREC},lp)
-# fill!(Sigma,one(PREC))
-# fill!(Pi,zero(ALG{PREC}))
-randomize!(Sigma,Pi,lp,ymws)
+fill!(Sigma,one(PREC))
+fill!(Pi,zero(ALG{PREC}))
+# randomize!(Sigma,Pi,lp,ymws)
 
 
 
@@ -85,8 +85,8 @@ randomize!(Sigma,Pi,lp,ymws)
 
 println("Allocating U")
 U = vector_field(GRP{PREC}, lp)
-# fill!(U, one(GRP{PREC}))
-gaugeheater!(U,lp,ymws)
+fill!(U, one(GRP{PREC}))
+# gaugeheater!(U,lp,ymws)
 println("# Plaquette( 0): ", plaquette(U,lp, gp, ymws))
 
 
@@ -94,13 +94,11 @@ println("# Plaquette( 0): ", plaquette(U,lp, gp, ymws))
 
 
 
-# SG = gauge_action(U, lp, gp, ymws)
-# SZ = zqcd_action(U, Sigma, Pi, lp, zp, gp, ymws)
+SG = gauge_action(U, lp, gp, ymws)
+SZ = zqcd_action(U, Sigma, Pi, lp, zp, gp, ymws)
 
-# println(SG)
-# println(plaquette(U,lp,gp,ymws))
-# println(SZ)
-# println((4/gp.beta)*(4/gp.beta)*(4/gp.beta)*(zp.b1+zp.c1)*(8^3))
+println("# gauge action: ",SG)
+println("# ZQCD action: ", SZ)
 
 
 
@@ -109,13 +107,13 @@ println("# Plaquette( 0): ", plaquette(U,lp, gp, ymws))
 # ## ========================== TESTS =============================
 # ## ==============================================================
 
-#     for i in 1:50
-#         dh, acc = HMC!(U,Sigma,Pi,0.05,20,lp,gp,zp,ymws,zws)
-#         println("######################################################")
-#         println("# ΔH( $i): ", dh)
-#         println("# Plaquette( $i): ", plaquette(U,lp, gp, ymws))
-#         println("# trZ( $i): ", CUDA.mean(Sigma))
-#     end
+    for i in 1:500
+        dh, acc = HMC!(U,Sigma,Pi,0.005,10,lp,gp,zp,ymws,zws)
+        println("######################################################")
+        println("# ΔH( $i): ", dh)
+        println("# Plaquette( $i): ", plaquette(U,lp, gp, ymws))
+        println("# trZ( $i): ", CUDA.mean(Sigma))
+    end
 
 # ## ==============================================================
 # ## ==============================================================
