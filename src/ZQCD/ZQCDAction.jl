@@ -41,20 +41,19 @@ function krnl_zqcd_act!(act, beta, U::AbstractArray{TG}, Sigma::AbstractArray{TS
         S += 3. * sigma2
 
     # Calculate kinetic action for Π
-        pi2 = norm2(Pi[b,r])
-        S += 2. * 3. * (- pi2/2.)
-        for dir in 1:N
-            b_up, r_up = up((b, r), dir, lp)
-            S -= 2. * convert(eltype(act),
-                real( 
-                    tr( (Pi[b,r] * U[b,dir,r]) * (Pi[b_up,r_up] * dag(U[b,dir,r])) ) 
-                )
+    for dir in 1:N
+        b_up, r_up = up((b, r), dir, lp)
+        S -= 2. * convert(eltype(act),
+            tr(
+                alg2mat(Pi[b,r]) * Pi[b,r] -  
+                Pi[b,r] * U[b,dir,r] * Pi[b_up,r_up] / U[b,dir,r] 
             )
-        end
-
-        S *= 4. / beta
-
+        )
+    end
+    S *= 4. / beta
+    
     # Calculate potential
+        pi2 = norm2(Pi[b,r])
         S += (4. / beta)*(4. / beta)*(4. / beta) * (
             sp.b1 * sigma2 + 
             sp.b2 * pi2 + 

@@ -22,14 +22,11 @@ function randomize!(SIGMA,PI, lp::SpaceParm, ymws::YMworkspace)
     return nothing
 end
 
-function krnl_assign_ZQCD!(Σ::AbstractArray{TS},Π::AbstractArray{TP}, m) where {TS, TP}
-
-    # Think about precision here
-    # SR2::eltype(sp.kap) = 1.4142135623730951
-    
+function krnl_assign_ZQCD!(Σ::AbstractArray{T},Π,m::AbstractArray{T}) where T 
     b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
+
     Σ[b,r] = m[b,1,r]
-    Π[b,r] = SU2alg{TS}(m[b,2,r],m[b,3,r],m[b,4,r])
+    Π[b,r] = SU2alg(m[b,2,r],m[b,3,r],m[b,4,r])
 
     return nothing
 end

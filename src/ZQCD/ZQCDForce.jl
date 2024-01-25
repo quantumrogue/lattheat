@@ -35,9 +35,6 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
     # Square mapping to CUDA block
     b = Int64(CUDA.threadIdx().x)
     r = Int64(CUDA.blockIdx().x)
-    
-    signU = -1.
-    signZ = -1.
 
     # Compute gauge force ----------------------------------------------------------
         for id in 1:N
@@ -63,7 +60,11 @@ function krnl_zqcd_force!(fgauge,fSigma,fPi, U::AbstractArray{TG}, Sigma::Abstra
     # # Compute force for Σ -------------------------------------------------------
     #     fS = zero(TS)
     #     fS = 6. .* Sigma[b,r] +
-    #         (4. / gp.beta)*(4. / gp.beta)*( 2. * zp.b1*Sigma[b,r] + 4. * zp.c1*Sigma[b,r]*Sigma[b,r]*Sigma[b,r] + 2. * zp.c3 * Sigma[b,r] * Pi2)
+    #         (4. / gp.beta)*(4. / gp.beta)*( 
+    #             2. * zp.b1*Sigma[b,r] + 
+    #             4. * zp.c1*Sigma[b,r]*Sigma[b,r]*Sigma[b,r] #+ 
+    #             # 2. * zp.c3 * Sigma[b,r] * Pi2
+    #         )
     #     for dir in 1:N
     #         up_b, up_r, dw_b, dw_r = updw((b,r),dir,lp)
     #         fS -= Sigma[up_b,up_r] + Sigma[dw_b,dw_r]
