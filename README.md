@@ -21,17 +21,11 @@ $Z(n) \leftarrow X_Z Z(n)$
 - Accept it if $r\leq e^{-\Delta S}$
 
 The $X$ matrices are built as follows: sort 4 real numbers $r_\mu\in (-.5,.5)$ and build
-$$
-    X = x_0 \mathbb{1} + i\vec{x}\cdot\vec{\sigma}
-$$
-with
-$x_0 = \text{sign}(r_0)\sqrt{1-\epsilon^2}$
-and $\vec{x} = \epsilon\frac{\vec{x}}{|\vec{x}|}$
+$$X = x_0 \mathbb{1} + i\vec{x}\cdot\vec{\sigma}$$
+with $x_0 = \text{sign}(r_0)\sqrt{1-\epsilon^2}$ and $\vec{x} = \epsilon\frac{\vec{x}}{|\vec{x}|}$
 
 To calculate primed $\Sigma$ and $\Pi$ we have to compute
-$$
-    XZ = (x_0 \mathbb{1} + i\vec{x}\cdot\vec{\sigma})(\frac{\Sigma}{2} + i \frac{\vec{\Pi}}{2}\cdot\vec{\sigma})
-$$
+$$XZ = (x_0 \mathbb{1} + i\vec{x}\cdot\vec{\sigma})(\frac{\Sigma}{2} + i \frac{\vec{\Pi}}{2}\cdot\vec{\sigma})$$
 after the explicit calculations, I got
 $$\begin{align*}
 \Sigma' &= x_0\Sigma + \vec{x}\cdot\vec{\Pi} \\
