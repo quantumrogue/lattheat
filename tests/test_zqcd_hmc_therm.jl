@@ -12,6 +12,13 @@ using LatticeGPU
 
 
 
+Nstep = ARGS[1]
+
+
+
+
+
+
 function gaugeheater!(f, lp::SpaceParm, ymws::YMworkspace)
     @timeit "Randomize SU(2) gauge field" begin
         m = CUDA.randn(ymws.PRC, lp.bsz,lp.ndim,4,lp.rsz)
@@ -107,10 +114,10 @@ println("# ZQCD action: ", SZ)
 # ## ========================== TESTS =============================
 # ## ==============================================================
 
-    for i in 1:500
-        dh, acc = HMC!(U,Sigma,Pi,0.005,10,lp,gp,zp,ymws,zws)
+    for i in 1:5000
+        dh, acc = HMC!(U,Sigma,Pi,0.01,parse(Int64,Nstep),lp,gp,zp,ymws,zws)
         println("######################################################")
-        println("# ΔH( $i): ", dh)
+        println("# ΔH( $i): ", dh, " ", acc)
         println("# Plaquette( $i): ", plaquette(U,lp, gp, ymws))
         println("# trZ( $i): ", CUDA.mean(Sigma))
     end
