@@ -12,6 +12,24 @@ and
 $$V = \biggl(\frac{4}{\beta}\biggr)^3\sum_n[\hat b_1\Sigma^2 + \hat b_2\Pi_a^2 + \hat c_1  \Sigma^4 + \hat c_2 (\Pi_a^2)^2 + \hat c_3  \Sigma^2\Pi_a^2]$$
 
 
+## Metropolis (noobies)
+We are going to implement also a single Metropolis by following the steps:
+- Propose a change like 
+$$U_\mu(n) \leftarrow X_U U_\mu(n)$$ and 
+$$Z(n) \leftarrow X_Z Z(n)$$
+The $X$ matrices are built as follows: sort 4 real numbers $r_\mu\in (-.5,.5)$ and build
+$$
+    X = x_0 \mathbb{1} + i\vec{x}\cdot\vec{\sigma}
+$$
+with
+$$
+    x_0 = \text{sign}(r_0)\sqrt{1-\epsilon^2}
+$$
+and 
+$$
+    \vec{x} = \epsilon\frac{\vec{x}}{|\vec{x}|}
+$$
+
 ## HMC
 For the HMC we need to compute forces.
 ### Forces (old)
