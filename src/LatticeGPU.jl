@@ -64,6 +64,7 @@ export randomize!
 export zqcd_action
 export zqcd_force
 export hamiltonian, MD!, HMC!
+export MetropolisUpdate!, sweep_gauge!, sweep_Z!
 
 
 # include("Phi4/Phi4.jl")

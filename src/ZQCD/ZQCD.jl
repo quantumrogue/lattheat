@@ -87,6 +87,9 @@ module ZQCD
     include("ZQCDHMC.jl")
         export hamiltonian, MD!, HMC!
 
+    include("ZQCDMetropolis.jl")
+        export MetropolisUpdate!, sweep_gauge!, sweep_Z!
+
     # include("ZQCDObservables.jl")
     #     export 
 
