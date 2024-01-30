@@ -27,12 +27,10 @@ with $x_0 = \text{sign}(r_0)\sqrt{1-\epsilon^2}$ and $\vec{x} = \epsilon\frac{\v
 To calculate primed $\Sigma$ and $\Pi$ we have to compute
 $$XZ = (x_0 \mathbb{1} + i\vec{x}\cdot\vec{\sigma})(\frac{\Sigma}{2} + i \frac{\vec{\Pi}}{2}\cdot\vec{\sigma})$$
 after the explicit calculations, I got
-$$\begin{align*}
-\Sigma' &= x_0\Sigma + \vec{x}\cdot\vec{\Pi} \\
-\Pi_1' &= x_0\Pi_1 + \Sigma x_1 +x_2\Pi_3 - x_3\Pi_2 \\
-\Pi_2' &= x_0\Pi_2 + \Sigma x_2 +x_3\Pi_1 - x_1\Pi_3 \\
-\Pi_3' &= x_0\Pi_3 + \Sigma x_3 +x_1\Pi_2 - x_2\Pi_1 \\
-\end{align*}$$
+$$\Sigma' = x_0\Sigma + \vec{x}\cdot\vec{\Pi}$$
+$$\Pi_1'  = x_0\Pi_1 + \Sigma x_1 +x_2\Pi_3 - x_3\Pi_2$$
+$$\Pi_2'  = x_0\Pi_2 + \Sigma x_2 +x_3\Pi_1 - x_1\Pi_3$$
+$$\Pi_3'  = x_0\Pi_3 + \Sigma x_3 +x_1\Pi_2 - x_2\Pi_1$$
 
 ## HMC
 For the HMC we need to compute forces.
