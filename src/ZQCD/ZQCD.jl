@@ -76,7 +76,7 @@ module ZQCD
     export ZQCDworkspace
 
     include("ZQCDFields.jl")
-        export randomize!
+        export randomize!, unitarize!, reunitarize!
 
     include("ZQCDAction.jl")
         export zqcd_action

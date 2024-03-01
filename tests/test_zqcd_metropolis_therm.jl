@@ -81,10 +81,10 @@ zws  = ZQCDworkspace(PREC, lp)
 println("Allocating Z")
 Sigma = scalar_field(PREC,lp)
 Pi = scalar_field(ALG{PREC},lp)
+# randomize!(Sigma,Pi,lp,ymws)
 fill!(Sigma,one(PREC))
 fill!(Pi,zero(ALG{PREC}))
-# randomize!(Sigma,Pi,lp,ymws)
-
+unitarize!(Sigma,Pi,lp)
 
 
 
@@ -121,7 +121,8 @@ println("# ZQCD action: ", SZ)
     #     println("# trZ( $i): ", CUDA.mean(Sigma))
     # end
 
-    Ntot = 50000
+    # Ntot = 200000
+    Ntot = 1000
     Nacc = 0
     for i in 1:Ntot
         ds, acc = MetropolisUpdate!(U,Sigma,Pi,0.05,0.005,lp,gp,zp,ymws,zws)
@@ -131,7 +132,10 @@ println("# ZQCD action: ", SZ)
         println("# trZ( $i): ", CUDA.mean(Sigma))
 
         global Nacc += (acc ? 1 : 0)
-        # reunitarize cada tot
+
+        if i%100==0
+            reunitarize!(U,Sigma,Pi)
+        end
     end
 
     println("ACCEPTANCE = Nacc/Ntot = $Nacc/$Ntot = $(Nacc/Ntot)")

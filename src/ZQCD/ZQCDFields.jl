@@ -8,7 +8,26 @@
 ### author:  pietro.butti.fl@gmail.com
 ### file:    ZQCDFields.jl
 ### created: Tue 12 Sep 12:15:09 CEST 2023
-###                               
+###             
+
+
+function unitarize!(SIGMA,PI, lp::SpaceParm)
+    @timeit "reunitarize Z field" begin
+        CUDA.@sync begin
+            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_unitarize_Z!(SIGMA,PI)
+        end        
+    end
+    return nothing
+end
+
+function krnl_unitarize_Z!(SIGMA::AbstractArray{T},PI::AbstractArray{PT}) where {T,PT}
+    b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
+    SIGMA[b,r] = sqrt(convert(T,4.) - norm2(PI[b,r]))
+    return nothing
+end
+
+
+
 
 function randomize!(SIGMA,PI, lp::SpaceParm, ymws::YMworkspace)
 

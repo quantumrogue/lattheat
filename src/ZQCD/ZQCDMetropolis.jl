@@ -23,10 +23,10 @@ function sweep_gauge!(U, lp::SpaceParm, ymws::YMworkspace, ϵ, cooler)
 end
 
 
-function sweep_Z!(Sigma,Pi, lp::SpaceParm, ymws::ZQCDworkspace, ϵ, cooler)
+function sweep_Z!(Sigma,Pi, lp::SpaceParm, ymws::YMworkspace, ϵ, cooler)
     @timeit "Sweep for Z field" begin
-        R = CUDA.rand(zws.PRC, lp.bsz, 4, lp.rsz)
-        mask = CUDA.rand(ymws.PRC, lp.bsz, lp.ndim, lp.rsz)
+        R = CUDA.rand(ymws.PRC, lp.bsz, 4, lp.rsz)
+        mask = CUDA.rand(ymws.PRC, lp.bsz, lp.rsz)
 
         CUDA.@sync begin
             CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_sweep_Z!(Sigma,Pi,R,mask,lp,convert(ymws.PRC,ϵ),cooler)          
@@ -52,21 +52,20 @@ function krnl_sweep_gauge!(U,R::AbstractArray{T},mask::AbstractArray{T},lp::Spac
             x2 = ϵ*r2/normx
             x3 = ϵ*r3/normx
 
-            XU = SU2(complex(x0,x3),complex(x2,x1)) * U[b,id,r]
-            U[b,id,r] = XU
+            U[b,id,r] = SU2(complex(x0,x3),complex(x2,x1)) * U[b,id,r]
         end
     end
     return nothing
 end
 
-function krnl_sweep_gauge!(Sigma,Pi,R::AbstractArray{T},mask::AbstractArray{T},lp::SpaceParm,ϵ::T,cooler) where T<:AbstractFloat
+function krnl_sweep_Z!(Sigma,Pi,R::AbstractArray{T},mask::AbstractArray{T},lp::SpaceParm,ϵ::T,cooler) where T<:AbstractFloat
     b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
 
-    if mask[b,id,r]<cooler 
-        r0 = R[b,id,4,r]
-        r1 = R[b,id,1,r]
-        r2 = R[b,id,2,r]
-        r3 = R[b,id,3,r]
+    if mask[b,r]<cooler 
+        r0 = R[b,4,r]
+        r1 = R[b,1,r]
+        r2 = R[b,2,r]
+        r3 = R[b,3,r]
         normx = sqrt(r1*r1 + r2*r2 + r3*r3)
 
         x0 = sign(r0)*sqrt(1. -ϵ*ϵ)
@@ -89,8 +88,6 @@ function krnl_sweep_gauge!(Sigma,Pi,R::AbstractArray{T},mask::AbstractArray{T},l
     return nothing
 end
 
-
-
 function MetropolisUpdate!(U,Sigma,Pi,ϵ,cooler,lp,gp,zp,ymws,zws,noacc=false)
     @timeit "Metropolis update" begin
         ymws.U1   .= U
@@ -98,7 +95,7 @@ function MetropolisUpdate!(U,Sigma,Pi,ϵ,cooler,lp,gp,zp,ymws,zws,noacc=false)
         zws.Pi    .= Pi
 
         # Compute initial action
-        Sin = gauge_action(U,lp,gp,ymws) + zqcd_action(U,sigma,Pi,lp,zp,gp,ymws)
+        Sin = gauge_action(U,lp,gp,ymws) + zqcd_action(U,Sigma,Pi,lp,zp,gp,ymws)
 
 
         # Propose a change
@@ -107,7 +104,7 @@ function MetropolisUpdate!(U,Sigma,Pi,ϵ,cooler,lp,gp,zp,ymws,zws,noacc=false)
 
 
         # Compute action difference
-        ΔS = gauge_action(U,lp,gp,ymws) + zqcd_action(U,sigma,Pi,lp,zp,gp,ymws) - Sin
+        ΔS = gauge_action(U,lp,gp,ymws) + zqcd_action(U,Sigma,Pi,lp,zp,gp,ymws) - Sin
         
         # Acc/rej step
         acc = true
@@ -126,3 +123,25 @@ function MetropolisUpdate!(U,Sigma,Pi,ϵ,cooler,lp,gp,zp,ymws,zws,noacc=false)
     end
     return ΔS, acc
 end
+
+
+function reunitarize!(U,Sigma,Pi, lp::SpaceParm)
+    @timeit "reunitarize Z field" begin
+        CUDA.@sync begin
+            CUDA.@cuda threads=lp.bsz blocks=lp.rsz krnl_reunitarize!(U,Sigma,Pi)
+        end        
+    end
+    return nothing
+end
+
+function krnl_unitarize_Z!(U,SIGMA::AbstractArray{T},PI::AbstractArray{PT}) where {T,PT}
+    b, r = CUDA.threadIdx().x, CUDA.blockIdx().x
+    SIGMA[b,r] = sqrt(convert(T,4.) - norm2(PI[b,r]))
+
+    for id in 1:lp.ndim
+        U[b,id,r] .= unitarize(U[b,id,r])
+    end
+
+    return nothing
+end
+

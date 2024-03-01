@@ -60,7 +60,7 @@ include("ZQCD/ZQCD.jl")
 
 using .ZQCD
 export ZQCDParm, ZQCDworkspace
-export randomize!
+export randomize!, unitarize!, reunitarize!
 export zqcd_action
 export zqcd_force
 export hamiltonian, MD!, HMC!
